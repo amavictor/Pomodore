@@ -28,7 +28,7 @@ export const Navigation = () => {
 }
 
 const NavigationBackground = styled.View`
-    padding-top: ${Platform.OS==="android" ? StatusBar.currentHeight : "0px"};
-    flex: 1;
-    background-color: ${({colors})=>colors.backgroundColor};
+    padding-top: ${Platform.OS === "android" ? StatusBar.currentHeight + "px"  : "0px"};
+    height: 100%;
+    background-color: ${({ colors }) => colors.backgroundColor};
 `

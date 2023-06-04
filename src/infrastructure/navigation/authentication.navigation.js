@@ -7,7 +7,6 @@ import { ThemeContext } from '../utilities/themeContext/themeContext';
 const Stack = createStackNavigator()
 
 export const AuthenticationNavigator = () => {
-    const {colors} = useContext(ThemeContext)
     return (
         <Stack.Navigator>
             <Stack.Screen
