@@ -8,7 +8,8 @@ export const Button = ({
     children,
     width,
     height,
-    fontSize
+    fontSize,
+    ...otherProps
 }) => {
     const { colors } = useContext(ThemeContext)
     return (
@@ -18,6 +19,7 @@ export const Button = ({
             height={height}
             width={width}
             fontSize={fontSize}
+            {...otherProps}
         >
             <Text
                 colors={colors}

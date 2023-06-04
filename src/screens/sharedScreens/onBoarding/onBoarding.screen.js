@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import styled from "styled-components/native";
 import { Dimensions, FlatList, Text } from "react-native";
 import { ThemeContext } from "../../../infrastructure/utilities/themeContext/themeContext";
@@ -11,6 +11,8 @@ const { width } = Dimensions.get("window");
 
 export const OnBoardingScreen = () => {
   const { colors } = useContext(ThemeContext);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
+  const ref = useRef(null)
 
   const slides = [
     {
@@ -33,12 +35,29 @@ export const OnBoardingScreen = () => {
   const updateCurrentSlideIndex = (e) => {
     const contentOffsetX = e.nativeEvent.contentOffset.x
     const currentIndex = Math.round(contentOffsetX / width)
-    
+    setCurrentSlideIndex(currentIndex)
+  }
+
+  const nextSlide = () => {
+    const nextSlideIndex = currentSlideIndex + 1
+    if (nextSlideIndex != slides.length) {
+      const offset = nextSlideIndex * width
+      ref?.current?.scrollToOffset({ offset, animated: true })
+      setCurrentSlideIndex(nextSlideIndex)
+    }
+  }
+
+  const skip = () => {
+    const lastSlideIndex = slides.length - 1
+    const offset = lastSlideIndex * width
+    ref?.current?.scrollToOffset({ offset, animated: true })
+    setCurrentSlideIndex(lastSlideIndex)
   }
 
   return (
     <OnBoardingContainer colors={colors}>
       <Slider
+        ref={ref}
         data={slides}
         horizontal
         pagingEnabled
@@ -47,13 +66,24 @@ export const OnBoardingScreen = () => {
         renderItem={({ item }) => <Slide item={item} />}
         keyExtractor={(item) => item.id}
       />
-      <Footer slides={slides} />
+      <Footer
+        slides={slides}
+        currentSlideIndex={currentSlideIndex}
+      />
 
       <ButtonContainer>
-        <Button>Next</Button>
-        <SkipButton>Skip</SkipButton>
-      </ButtonContainer>
+        {
+          currentSlideIndex === slides.length - 1
+            ?
+            <Button>Get Started</Button>
+            :
+            <>
+              <Button onPress={nextSlide}>Next</Button>
+              <SkipButton onPress={skip}>Skip</SkipButton>
+            </>
+        }
 
+      </ButtonContainer>
     </OnBoardingContainer>
   );
 };
@@ -70,8 +100,7 @@ const Slide = ({ item }) => {
   );
 };
 
-const Footer = ({ slides }) => {
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
+const Footer = ({ slides, currentSlideIndex }) => {
   const { colors } = useContext(ThemeContext);
   return (
     <StyledFooterContainer>
@@ -149,9 +178,9 @@ const StyledIndicatorContainer = styled.View`
 `;
 
 const StyledIndicator = styled.View`
-  height: ${mScale(10)}px;
+  height: ${mScale(5)}px;
   width: ${({ index, currentSlideIndex }) =>
-    index === currentSlideIndex ? mScale(25) + "px" : mScale(10) + "px"
+    index === currentSlideIndex ? mScale(40) + "px" : mScale(10) + "px"
   };
   background-color: ${({ colors, index, currentSlideIndex }) =>
     index === currentSlideIndex ? colors.primary : colors.onBoardingIndicator
