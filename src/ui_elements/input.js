@@ -3,13 +3,18 @@ import { useContext } from 'react';
 import { ThemeContext } from '../infrastructure/utilities/themeContext/themeContext';
 import { mScale } from '../infrastructure/utilities/utilFunctions';
 import { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 
 export const Input = ({
-    placeholder
+    IconStart,
+    IconEnd,
+    password,
+    ...otherProps
 }) => {
     const { colors } = useContext(ThemeContext)
 
     const [isFocused, setIsFocused] = useState(false);
+    const [showPassword, setShowPassword] = useState(true)
 
     const handleFocus = () => {
         setIsFocused(true)
@@ -21,16 +26,30 @@ export const Input = ({
     return (
         <InputContainer
             colors={colors}
+            focused={isFocused}
         >
             <IconContainer>
-                <IconImage />
+                {IconStart && <IconStart />}
             </IconContainer>
             <InputElement
-                placeholder={placeholder}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
-                focused={isFocused}
+                colors={colors}
+                secureTextEntry={password && showPassword}
+                {...otherProps}
             />
+            {
+                password &&
+                <IconContainer>
+                    <Ionicons
+                        onPress={() => setShowPassword(!showPassword)}
+                        name={showPassword ? 'eye-off' : 'eye'}
+                        size={20}
+                        color="black"
+                    />
+                </IconContainer>
+            }
+
 
         </InputContainer>
     )
@@ -38,21 +57,27 @@ export const Input = ({
 
 
 const InputContainer = styled.View`
-    width: 80%;
+    width: 100%;
     border-radius: ${mScale(6)}px;
-    background-color: ${({ colors }) => colors.buttonOutlineColor};
+    background-color: ${({ colors, focused }) => focused ? colors.activeInput : colors.buttonOutlineColor};
     height: ${mScale(60)}px;
     flex-direction: row;
     align-items: center;
+    gap: ${mScale(20)}px;
     padding: ${mScale(10)}px;
+    border-width: ${({ focused }) => focused ? 1 : 0}px;
+    border-color: ${({ colors, focused }) => focused ? colors.primary : null};
+
+
 `
 const InputElement = styled.TextInput`
-    width: 100%;
+    width: 75%;
+    color: ${({ colors }) => colors.textColor};
+    font-weight: 500;
 `
 const IconContainer = styled.View`
+
 `
-const IconImage = styled.Image`
-    width: ${mScale(10)}px;
-    height: ${mScale(10)}px;
-`
+
+
 
