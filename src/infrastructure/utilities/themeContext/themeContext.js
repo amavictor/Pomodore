@@ -13,7 +13,9 @@ export const ThemeContextProvider = ({children}) => {
                 backgroundColor: "#181D31",
                 textColor: "#ffffff",
                 primary: "#ef5d5d",
-                onBoardingIndicator: "#F6F1F7"
+                onBoardingIndicator: "#F6F1F7",
+                buttonOutlineColor: "#EFEFEF",
+                lineColor:"#9e9e9e",
             }
         }
         else {
@@ -21,7 +23,10 @@ export const ThemeContextProvider = ({children}) => {
                 backgroundColor: "#ffffff",
                 textColor: "#283849",
                 primary: "#ef5d5d",
-                onBoardingIndicator: "#F6F1F1"
+                onBoardingIndicator: "#F6F1F1",
+                buttonOutlineColor: "#EFEFEF",
+                lineColor:"#9e9e9e",
+
             }
         }
     }

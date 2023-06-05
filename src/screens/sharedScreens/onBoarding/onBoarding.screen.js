@@ -9,7 +9,7 @@ import { Button } from "../../../ui_elements/buttons";
 
 const { width } = Dimensions.get("window");
 
-export const OnBoardingScreen = () => {
+export const OnBoardingScreen = ({navigation}) => {
   const { colors } = useContext(ThemeContext);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
   const ref = useRef(null)
@@ -75,7 +75,7 @@ export const OnBoardingScreen = () => {
         {
           currentSlideIndex === slides.length - 1
             ?
-            <Button>Get Started</Button>
+            <Button onPress={()=>navigation.navigate("getIn")}>Get Started</Button>
             :
             <>
               <Button onPress={nextSlide}>Next</Button>
