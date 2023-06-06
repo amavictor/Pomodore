@@ -4,6 +4,8 @@ import { useContext } from 'react';
 import { ThemeContext } from '../utilities/themeContext/themeContext';
 import { GetIn } from "../../screens/sharedScreens/authentication/getIn";
 import { SignUp } from "../../screens/sharedScreens/authentication/signUp";
+import { FillProfile } from "../../screens/sharedScreens/authentication/fillProfile";
+import { Login } from "../../screens/sharedScreens/authentication/login";
 
 
 const Stack = createStackNavigator()
@@ -15,22 +17,28 @@ export const AuthenticationNavigator = () => {
                 name="onBoarding"
                 component={OnBoardingScreen}
                 options={{
-                    headerShown:false
+                    headerShown: false
                 }}
             />
             <Stack.Screen
                 name="getIn"
                 component={GetIn}
                 options={{
-                    headerShown:false
+                    headerShown: false
                 }}
             />
             {/* <Stack.Screen name="signInOptions" component={null}/> */}
             <Stack.Screen name="signUp" component={SignUp} />
-            {/* <Stack.Screen name="fillProfile" component={null} />
-            <Stack.Screen name="login" component={null} />
-            <Stack.Screen name="forgotPassword" component={null}/> */}
-            
+            <Stack.Screen
+                name="fillProfile"
+                component={FillProfile}
+                options={{
+                    headerMode: "none",
+                }}
+            />
+            <Stack.Screen name="login" component={Login} />
+            {/* <Stack.Screen name="forgotPassword" component={null}/> */}
+
         </Stack.Navigator>
     )
 }

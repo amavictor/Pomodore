@@ -10,51 +10,42 @@ export const Input = ({
     IconEnd,
     password,
     ...otherProps
-}) => {
-    const { colors } = useContext(ThemeContext)
-
+  }) => {
+    const { colors } = useContext(ThemeContext);
+  
     const [isFocused, setIsFocused] = useState(false);
-    const [showPassword, setShowPassword] = useState(true)
-
+    const [showPassword, setShowPassword] = useState(true);
+  
     const handleFocus = () => {
-        setIsFocused(true)
-    }
+      setIsFocused(true);
+    };
     const handleBlur = () => {
-        setIsFocused(false)
-    }
-
+      setIsFocused(false);
+    };
+  
     return (
-        <InputContainer
-            colors={colors}
-            focused={isFocused}
-        >
-            <IconContainer>
-                {IconStart && <IconStart />}
-            </IconContainer>
-            <InputElement
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                colors={colors}
-                secureTextEntry={password && showPassword}
-                {...otherProps}
+      <InputContainer colors={colors} focused={isFocused}>
+        <IconContainer>{IconStart && <IconStart />}</IconContainer>
+        <InputElement
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          colors={colors}
+          secureTextEntry={password ? showPassword : false} // Updated secureTextEntry prop
+          {...otherProps}
+        />
+        {password && (
+          <IconContainer>
+            <Ionicons
+              onPress={() => setShowPassword(!showPassword)}
+              name={showPassword ? 'eye-off' : 'eye'}
+              size={20}
+              color="black"
             />
-            {
-                password &&
-                <IconContainer>
-                    <Ionicons
-                        onPress={() => setShowPassword(!showPassword)}
-                        name={showPassword ? 'eye-off' : 'eye'}
-                        size={20}
-                        color="black"
-                    />
-                </IconContainer>
-            }
-
-
-        </InputContainer>
-    )
-}
-
+          </IconContainer>
+        )}
+      </InputContainer>
+    );
+  };
 
 const InputContainer = styled.View`
     width: 100%;

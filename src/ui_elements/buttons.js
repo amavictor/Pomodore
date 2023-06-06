@@ -5,55 +5,62 @@ import { mScale } from '../infrastructure/utilities/utilFunctions';
 
 
 export const Button = ({
-    children,
-    width,
-    height,
-    fontSize,
-    outline,
-    ...otherProps
-  }) => {
+  children,
+  width,
+  height,
+  fontSize,
+  outline,
+  alternate,
+  ...otherProps
+}) => {
   const { colors } = useContext(ThemeContext);
-  
-  
-    return (
-      <ButtonElement
+
+
+  return (
+    <ButtonElement
+      colors={colors}
+      activeOpacity={0.8}
+      height={height}
+      width={width}
+      fontSize={fontSize}
+      outline={outline} // Added outline prop here
+    alternate={alternate}
+      {...otherProps}
+    >
+      <ButtonText
         colors={colors}
-        activeOpacity={0.8}
-        height={height}
-        width={width}
         fontSize={fontSize}
-        outline={outline} // Added outline prop here
-        {...otherProps}
+        outline={outline}
+        alternate={alternate}
       >
-        <ButtonText colors={colors} fontSize={fontSize}>
-          {children}
-        </ButtonText>
-      </ButtonElement>
-    );
-  };
-  
-  const ButtonElement = styled.TouchableOpacity`
+        {children}
+      </ButtonText>
+    </ButtonElement>
+  );
+};
+
+
+const ButtonElement = styled.TouchableOpacity`
     display: flex;
     align-items: center;
     justify-content: center;
     width: ${({ width }) => (width ? width + 'px' : "100%")};
-    background-color: ${({ colors, outline }) =>
-      outline ? 'transparent' : colors.primary};
+    background-color: ${({ colors, outline, alternate }) =>
+    alternate ? colors.alternatePrimary : outline ? 'transparent' : colors.primary};
     height: ${({ height }) => (height ? height : mScale(50))}px;
     border-width: ${({ outline }) => (outline ? '2px' : '0')};
     border-color: ${({ colors, outline }) =>
-      outline ? colors.buttonOutlineColor : 'transparent'};
+    outline ? colors.buttonOutlineColor : 'transparent'};
     border-radius: ${mScale(25)}px;
-    shadow-color: ${({ colors, outline }) => colors.primary};
+    shadow-color: ${({ colors, outline,alternate }) => outline ? "transparent" : alternate ? "transparent" : colors.primary};
     shadow-offset: ${mScale(2)}px ${mScale(10)}px;
     shadow-opacity: 0.25;
     shadow-radius: 15px;
-    elevation: 2;
+    elevation: 10;
   `;
-  
-  const ButtonText = styled.Text`
+
+const ButtonText = styled.Text`
     font-size: ${({ fontSize }) => (fontSize ? fontSize : mScale(16))}px;
     font-weight: 600;
-    color: ${({ colors }) => colors.backgroundColor};
+    color: ${({ colors, outline, alternate }) => outline ? colors.textColor : alternate ? colors.textColor : colors.backgroundColor};
   `;
-  

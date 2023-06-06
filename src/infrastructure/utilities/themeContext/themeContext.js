@@ -16,7 +16,8 @@ export const ThemeContextProvider = ({children}) => {
                 onBoardingIndicator: "#F6F1F7",
                 buttonOutlineColor: "#EFEFEF",
                 lineColor: "#9e9e9e",
-                activeInput: "#f5e1e1"
+                activeInput: "#f5e1e1",
+                alternatePrimary:"#f0adad"
             }
         }
         else {
@@ -27,8 +28,8 @@ export const ThemeContextProvider = ({children}) => {
                 onBoardingIndicator: "#F6F1F1",
                 buttonOutlineColor: "#EFEFEF",
                 lineColor: "#9e9e9e",
-                activeInput: "#f5e1e1"
-
+                activeInput: "#f5e1e1",
+                alternatePrimary:"#f0adad"
             }
         }
     }

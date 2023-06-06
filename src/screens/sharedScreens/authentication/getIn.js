@@ -30,7 +30,7 @@ export const GetIn = ({navigation}) => {
                     </ButtonContent>
                 </Button>
 
-                {Platform.OS === "ios" ?
+                {Platform.OS === "ios" &&
                     <Button outline>
                         <ButtonContent>
                             <SocialImage source={require("../../../../assets/icons/apple-logo.png")} />
@@ -38,7 +38,7 @@ export const GetIn = ({navigation}) => {
                                 Continue with Apple
                             </SocialText>
                         </ButtonContent>
-                    </Button> : null}
+                    </Button>}
             </ButtonContainer>
 
             <LineContainer>
@@ -48,7 +48,10 @@ export const GetIn = ({navigation}) => {
             </LineContainer>
 
             <PasswordButtonContainer>
-                <Button width={() => `${mScale(100)}px`}>Sign in with password</Button>
+                <Button
+                    width={() => `${mScale(100)}px`}
+                    onPress={() => navigation.navigate("login")}
+                >Sign in with password</Button>
             </PasswordButtonContainer>
 
             <AccountText colors={colors}>Don't have an account?
@@ -72,7 +75,7 @@ const Container = styled.View`
     background-color: ${({ colors }) => colors.backgroundColor};
     align-items: center;
     justify-content: center;
-    gap: ${mScale(70)}px;
+    gap: ${mScale(40)}px;
     width: 100%;
     padding-horizontal:${mScale(20)}px;
 `
@@ -82,7 +85,7 @@ const GetStartedText = styled.Text`
     color: ${({ colors }) => colors.textColor};
 `
 const ButtonContainer = styled.View`
-    gap: 20%;
+    gap: ${mScale(30)}px;
     width: 100%;
 `
 const Line = styled.View`
@@ -97,6 +100,7 @@ const LineContainer = styled.View`
     flex-direction: row;
     align-items: center;
     justify-content:center;
+    margin-bottom: ${mScale(10)}px;
 `
 const PasswordButtonContainer = styled(View)`
     width: 100%;

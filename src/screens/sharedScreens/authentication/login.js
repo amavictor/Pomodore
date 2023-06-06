@@ -1,28 +1,19 @@
 import styled from "styled-components/native"
-import {
-    View,
-    Text,
-    KeyboardAvoidingView
-} from "react-native"
+import { useContext } from "react"
+import { KeyboardAvoidingView, Text } from "react-native"
 import { useColorScheme } from "react-native"
 import { Input } from "../../../ui_elements/input"
-import { useContext } from 'react';
-import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
-import { Entypo } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import { mScale, vScale } from '../../../infrastructure/utilities/utilFunctions';
-import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { Button } from "../../../ui_elements/buttons";
-
-
-
-
-export const SignUp = ({ navigation }) => {
+import BouncyCheckbox from "react-native-bouncy-checkbox"
+import { mScale, vScale } from "../../../infrastructure/utilities/utilFunctions"
+import { ThemeContext } from "../../../infrastructure/utilities/themeContext/themeContext"
+import { Button } from "../../../ui_elements/buttons"
+import { Ionicons, Entypo } from '@expo/vector-icons';
+export const Login = ({ navigation }) => {
     const { colors } = useContext(ThemeContext)
     const colorScheme = useColorScheme()
     return (
         <BackgroundContainer colors={colors}>
-            <SignUpText colors={colors}>Create Your Account</SignUpText>
+            <SignUpText colors={colors}>Login To Your Account</SignUpText>
 
             <KeyboardAvoidingView>
                 <InputsContainer>
@@ -42,14 +33,6 @@ export const SignUp = ({ navigation }) => {
                         password={true}
                         IconStart={() => <Entypo name="lock" size={20} color={colors.textColor} />}
                     />
-                        <Input
-                        placeholder="Confirm Password"
-                        keyboardType="password"
-                        KeyboardAppearance={colorScheme}
-                        clearButtonMode="unless-editing"
-                        password={true}
-                        IconStart={() => <Entypo name="lock" size={20} color={colors.textColor} />}
-                    />
                 </InputsContainer>
             </KeyboardAvoidingView>
 
@@ -61,7 +44,7 @@ export const SignUp = ({ navigation }) => {
                 <RememberText>Remember me</RememberText>
             </RememberContainer>
 
-            <Button onPress={() => navigation.navigate("fillProfile")}>Sign Up</Button>
+            <Button onPress={() => navigation.navigate("fillProfile")}>Login</Button>
 
             <AlternateSignUpContainer>
                 <LineContainer>
@@ -75,7 +58,7 @@ export const SignUp = ({ navigation }) => {
                     >
                         <ButtonContent>
                             <Social source={require("../../../../assets/icons/google.png")} />
-                            <ButtonText colors={colors}>Sign Up with Google</ButtonText>
+                            <ButtonText colors={colors}>Login Up with Google</ButtonText>
                         </ButtonContent>
 
                     </Button>
@@ -86,7 +69,7 @@ export const SignUp = ({ navigation }) => {
                             >
                                 <ButtonContent>
                                     <Social source={require("../../../../assets/icons/apple-logo.png")} />
-                                    <ButtonText colors={colors}>Sign Up with Apple</ButtonText>
+                                    <ButtonText colors={colors}>Login Up with Apple</ButtonText>
                                 </ButtonContent>
                             </Button>
                             : null
