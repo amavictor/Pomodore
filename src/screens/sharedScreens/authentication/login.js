@@ -58,7 +58,7 @@ export const Login = ({ navigation }) => {
                     >
                         <ButtonContent>
                             <Social source={require("../../../../assets/icons/google.png")} />
-                            <ButtonText colors={colors}>Login Up with Google</ButtonText>
+                            <ButtonText colors={colors}>Login with Google</ButtonText>
                         </ButtonContent>
 
                     </Button>
@@ -69,7 +69,7 @@ export const Login = ({ navigation }) => {
                             >
                                 <ButtonContent>
                                     <Social source={require("../../../../assets/icons/apple-logo.png")} />
-                                    <ButtonText colors={colors}>Login Up with Apple</ButtonText>
+                                    <ButtonText colors={colors}>Login with Apple</ButtonText>
                                 </ButtonContent>
                             </Button>
                             : null

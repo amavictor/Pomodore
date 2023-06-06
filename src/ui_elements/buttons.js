@@ -24,7 +24,7 @@ export const Button = ({
       width={width}
       fontSize={fontSize}
       outline={outline} // Added outline prop here
-    alternate={alternate}
+      alternate={alternate}
       {...otherProps}
     >
       <ButtonText
@@ -44,7 +44,7 @@ const ButtonElement = styled.TouchableOpacity`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: ${({ width }) => (width ? width + 'px' : "100%")};
+    width: ${({ width }) => (width ? `${width + 'px'}` : "100%")};
     background-color: ${({ colors, outline, alternate }) =>
     alternate ? colors.alternatePrimary : outline ? 'transparent' : colors.primary};
     height: ${({ height }) => (height ? height : mScale(50))}px;
@@ -52,7 +52,7 @@ const ButtonElement = styled.TouchableOpacity`
     border-color: ${({ colors, outline }) =>
     outline ? colors.buttonOutlineColor : 'transparent'};
     border-radius: ${mScale(25)}px;
-    shadow-color: ${({ colors, outline,alternate }) => outline ? "transparent" : alternate ? "transparent" : colors.primary};
+    shadow-color: ${({ colors, outline, alternate }) => outline ? "transparent" : alternate ? "transparent" : colors.primary};
     shadow-offset: ${mScale(2)}px ${mScale(10)}px;
     shadow-opacity: 0.25;
     shadow-radius: 15px;
