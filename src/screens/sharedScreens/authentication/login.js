@@ -1,6 +1,6 @@
 import styled from "styled-components/native"
 import { useContext } from "react"
-import { KeyboardAvoidingView, Text } from "react-native"
+import { KeyboardAvoidingView, ScrollView, Text } from "react-native"
 import { useColorScheme } from "react-native"
 import { Input } from "../../../ui_elements/input"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
@@ -13,85 +13,87 @@ export const Login = ({ navigation }) => {
     const colorScheme = useColorScheme()
     return (
         <BackgroundContainer colors={colors}>
-            <SignUpText colors={colors}>Login To Your Account</SignUpText>
+                <SignUpText colors={colors}>Login To Your Account</SignUpText>
+                <KeyboardAvoidingView behavior="padding">
+                    <InputsContainer>
+                        <Input
+                            placeholder="Email"
+                            inputMode="email"
+                            keyboardType="email-address"
+                            KeyboardAppearance={colorScheme}
+                            clearButtonMode="unless-editing"
+                            IconStart={() => <Ionicons name="mail" size={20} color={colors.textColor} />}
+                        />
+                        <Input
+                            placeholder="Password"
+                            keyboardType="password"
+                            KeyboardAppearance={colorScheme}
+                            clearButtonMode="unless-editing"
+                            password={true}
+                            IconStart={() => <Entypo name="lock" size={20} color={colors.textColor} />}
+                        />
+                    </InputsContainer>
+                </KeyboardAvoidingView>
 
-            <KeyboardAvoidingView>
-                <InputsContainer>
-                    <Input
-                        placeholder="Email"
-                        inputMode="email"
-                        keyboardType="email-address"
-                        KeyboardAppearance={colorScheme}
-                        clearButtonMode="unless-editing"
-                        IconStart={() => <Ionicons name="mail" size={20} color={colors.textColor} />}
+                <RememberContainer>
+                    <BouncyCheckbox
+                        size={18}
+                        fillColor={colors.primary}
                     />
-                    <Input
-                        placeholder="Password"
-                        keyboardType="password"
-                        KeyboardAppearance={colorScheme}
-                        clearButtonMode="unless-editing"
-                        password={true}
-                        IconStart={() => <Entypo name="lock" size={20} color={colors.textColor} />}
-                    />
-                </InputsContainer>
-            </KeyboardAvoidingView>
+                    <RememberText>Remember me</RememberText>
+                </RememberContainer>
 
-            <RememberContainer>
-                <BouncyCheckbox
-                    size={18}
-                    fillColor={colors.primary}
-                />
-                <RememberText>Remember me</RememberText>
-            </RememberContainer>
+                <Button onPress={() => navigation.navigate("fillProfile")}>Login</Button>
 
-            <Button onPress={() => navigation.navigate("fillProfile")}>Login</Button>
+                <AlternateSignUpContainer>
+                    <LineContainer>
+                        <Line colors={colors} />
+                        <Text>Or</Text>
+                        <Line colors={colors} />
+                    </LineContainer>
+                    <SocialSignUpContainer>
+                        <Button
+                            outline
+                        >
+                            <ButtonContent>
+                                <Social source={require("../../../../assets/icons/google.png")} />
+                                <ButtonText colors={colors}>Login with Google</ButtonText>
+                            </ButtonContent>
 
-            <AlternateSignUpContainer>
-                <LineContainer>
-                    <Line colors={colors} />
-                    <Text>Or</Text>
-                    <Line colors={colors} />
-                </LineContainer>
-                <SocialSignUpContainer>
-                    <Button
-                        outline
-                    >
-                        <ButtonContent>
-                            <Social source={require("../../../../assets/icons/google.png")} />
-                            <ButtonText colors={colors}>Login with Google</ButtonText>
-                        </ButtonContent>
-
-                    </Button>
-                    {
-                        Platform.OS === "ios" ?
-                            <Button
-                                outline
-                            >
-                                <ButtonContent>
-                                    <Social source={require("../../../../assets/icons/apple-logo.png")} />
-                                    <ButtonText colors={colors}>Login with Apple</ButtonText>
-                                </ButtonContent>
-                            </Button>
-                            : null
-                    }
-                </SocialSignUpContainer>
-            </AlternateSignUpContainer>
-            <ActiveAccount colors={colors}>
-                Already have an account?
-                <SignIn colors={colors}>Sign In</SignIn>
-            </ActiveAccount>
+                        </Button>
+                        {
+                            Platform.OS === "ios" ?
+                                <Button
+                                    outline
+                                >
+                                    <ButtonContent>
+                                        <Social source={require("../../../../assets/icons/apple-logo.png")} />
+                                        <ButtonText colors={colors}>Login with Apple</ButtonText>
+                                    </ButtonContent>
+                                </Button>
+                                : null
+                        }
+                    </SocialSignUpContainer>
+                </AlternateSignUpContainer>
+                <ActiveAccount colors={colors}>
+                    Already have an account?
+                    <SignIn colors={colors}>Sign In</SignIn>
+                </ActiveAccount>
         </BackgroundContainer>
     )
 }
 
 
-const BackgroundContainer = styled.View`
-    flex: 1;
+const BackgroundContainer = styled.ScrollView.attrs({
+    contentContainerStyle: {
+        flexGrow: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        gap: `${mScale(20)}px`
+    },
+})`
     background-color: ${({ colors }) => colors.backgroundColor};
     padding-horizontal: ${mScale(20)}px;
-    justify-content: center;
-    align-items: center;
-    gap:${mScale(30)}px;
 `
 const SignUpText = styled.Text`
     font-size: ${mScale(35)}px;

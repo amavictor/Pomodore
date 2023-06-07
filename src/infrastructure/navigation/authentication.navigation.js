@@ -6,6 +6,7 @@ import { GetIn } from "../../screens/sharedScreens/authentication/getIn";
 import { SignUp } from "../../screens/sharedScreens/authentication/signUp";
 import { FillProfile } from "../../screens/sharedScreens/authentication/fillProfile";
 import { Login } from "../../screens/sharedScreens/authentication/login";
+import { CameraComponent } from "../../screens/sharedScreens/authentication/components/camera";
 
 
 const Stack = createStackNavigator()
@@ -37,6 +38,7 @@ export const AuthenticationNavigator = () => {
                 }}
             />
             <Stack.Screen name="login" component={Login} />
+            <Stack.Screen name="camera" component={CameraComponent} />
             {/* <Stack.Screen name="forgotPassword" component={null}/> */}
 
         </Stack.Navigator>

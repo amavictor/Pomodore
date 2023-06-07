@@ -1,9 +1,17 @@
 import styled from "styled-components/native"
 import {
     KeyboardAvoidingView,
-    Image
+    Image,
+    Alert,
+    ScrollView
 } from "react-native"
-import { useContext, useRef } from "react"
+import {
+    useContext,
+    useRef,
+    useState,
+    useEffect,
+    useCallback
+} from "react"
 import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
 import { mScale, vScale } from '../../../infrastructure/utilities/utilFunctions';
 import { Stack, Avatar } from "@react-native-material/core";
@@ -13,94 +21,163 @@ import { Button } from "../../../ui_elements/buttons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { CustomBackdrop } from "../../../ui_elements/bottomSheetBackDrop";
+import * as ImagePicker from 'expo-image-picker';
+import { Camera } from "expo-camera";
 
-export const FillProfile = () => {
+export const FillProfile = ({ navigation, route }) => {
     const { colors } = useContext(ThemeContext)
     const insets = useSafeAreaInsets()
     const bottomSheetModalRef = useRef(null)
+    const [image, setImage] = useState(null)
+    const [mediaPermission, requestMediaPermission] = ImagePicker.useMediaLibraryPermissions()
+
+    const [cameraPermission, requestCameraPermission] = Camera.useCameraPermissions()
+
+    useEffect(() => {
+        if (route.params?.imageFromCamera) {
+            setImage(route.params?.imageFromCamera)
+            bottomSheetModalRef?.current?.close()
+        }
+    }, [route.params?.imageFromCamera])
 
     const snapPoints = ["20%"]
     const handleSelectImageSource = () => {
         bottomSheetModalRef.current?.present()
     }
+
+    const handleCamera = useCallback(() => {
+        if (!cameraPermission) {
+            requestCameraPermission()
+        }
+        if (!cameraPermission?.granted) {
+            Alert.alert('Camera permission denied', 'Would you like to grant camera permission?', [
+                {
+                    text: "Request permission",
+                    onPress: () => {
+                        requestCameraPermission()
+                        navigation.navigate('camera')
+                    }
+                }, {
+                    text: 'Cancel',
+                    style: 'cancel'
+                }
+            ])
+        }
+        else {
+            navigation.navigate('camera')
+        }
+    }, [cameraPermission])
+
+    const selectImageFromGallery = async () => {
+
+        const { status } = await requestMediaPermission()
+
+        if (status !== 'granted') {
+            Alert.alert('Sorry, we need camera roll permissions to make this work!');
+        }
+        else {
+            let imageResult = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1
+            })
+            if (!imageResult.canceled) {
+                setImage(imageResult?.assets[0]?.uri)
+                bottomSheetModalRef?.current?.close()
+            } else {
+                Alert.alert('You did not select any image.');
+            }
+        }
+    }
+
     return (
         <BottomSheetModalProvider>
             <BackgroundContainer colors={colors} insets={insets}>
-                <TitleContainer>
-                    <TitleText colors={colors}>Fill your profile</TitleText>
-                    <TitleDescription colors={colors}>
-                        Don't worry you can always change this later or you can skip this for now
-                    </TitleDescription>
-                </TitleContainer>
-                <ProfileDetailsContainer>
-                    <AvatarContainer
-                        onPress={handleSelectImageSource}
-                    >
-                        <Stack center spacing={4}>
-                            {/* <Avatar label="Kent Dodds" autoColor />
-                            <Avatar image={{ uri: "https://mui.com/static/images/avatar/1.jpg" }} /> */}
-                            <Avatar
-                                icon={props => <Icon name="account" {...props} />}
-                                size={150}
-                                color={colors.buttonOutlineColor}
-                                tintColor={colors.primary}
-                            />
-                        </Stack>
-                        <EditIcon
-                            source={require("../../../../assets/icons/pencil.png")}
-                        />
-                    </AvatarContainer>
-                    <KeyboardAvoidingView>
-                        <InputContainer>
-                            <Input
-                                placeholder="Full name "
-                            />
-                            <Input
-                                placeholder="Nickname"
-                            />
-                        </InputContainer>
-                    </KeyboardAvoidingView>
-
-
-                </ProfileDetailsContainer>
-                <ButtonContainer>
-                    <Button width={`${mScale(160)}}`} alternate>Skip</Button>
-                    <Button width={`${mScale(160)}}`}>Start</Button>
-                </ButtonContainer>
-
-                <BottomSheetModal
-                    ref={bottomSheetModalRef}
-                    index={0}
-                    snapPoints={snapPoints}
-                    enablePanDownToClose={true}
-                    backgroundStyle={{
-                        borderRadius: 25,
-                        backgroundColor: `${colors.backgroundColor}`
-                    }}
-                    handleIndicatorStyle={{
-                        backgroundColor: `${colors.primary}`
-                    }}
-                    backdropComponent={CustomBackdrop}
-                >
-                    <BottomSheetContentContainer>
-                        <Source colors={colors}>Select image source</Source>
-                        <SourceContainer>
-                            <SourceBackground
-                                colors={colors}
-                                activeOpacity={0.7}
+                <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+                    <KeyboardAvoidingView behavior="padding">
+                        <TitleContainer>
+                            <TitleText colors={colors}>Fill your profile</TitleText>
+                            <TitleDescription colors={colors}>
+                                Don't worry you can always change this later or you can skip this for now
+                            </TitleDescription>
+                        </TitleContainer>
+                        <ProfileDetailsContainer>
+                            <AvatarContainer
+                                onPress={handleSelectImageSource}
                             >
-                                <SourceImages source={require("../../../../assets/icons/camera.png")} />
-                            </SourceBackground>
-                            <SourceBackground colors={colors}>
-                                <SourceImages source={require("../../../../assets/icons/gallery.png")} />
-                            </SourceBackground>
-                        </SourceContainer>
-                    </BottomSheetContentContainer>
-                </BottomSheetModal>
+                                <Stack center spacing={4}>
+                                    {/* <Avatar label="Kent Dodds" autoColor />
+                            <Avatar image={{ uri: "https://mui.com/static/images/avatar/1.jpg" }} /> */}
+                                    <Avatar
+                                        icon={props => <Icon name="account" {...props} />}
+                                        size={150}
+                                        color={colors.buttonOutlineColor}
+                                        tintColor={colors.primary}
+                                        image={image && { uri: image }}
+                                    />
+                                </Stack>
+                                <EditIcon
+                                    source={require("../../../../assets/icons/pencil.png")}
+                                />
+                            </AvatarContainer>
+
+                            <InputContainer>
+                                <Input
+                                    placeholder="Full name "
+                                />
+                                <Input
+                                    placeholder="Nickname"
+                                />
+                            </InputContainer>
+
+
+                        </ProfileDetailsContainer>
+                        <ButtonContainer>
+                            <Button width={`${mScale(160)}}`} alternate>Skip</Button>
+                            <Button width={`${mScale(160)}}`}>Start</Button>
+                        </ButtonContainer>
+
+                        <BottomSheetModal
+                            ref={bottomSheetModalRef}
+                            index={0}
+                            snapPoints={snapPoints}
+                            enablePanDownToClose={true}
+                            backgroundStyle={{
+                                borderRadius: 25,
+                                backgroundColor: `${colors.backgroundColor}`
+                            }}
+                            handleIndicatorStyle={{
+                                backgroundColor: `${colors.primary}`
+                            }}
+                            backdropComponent={CustomBackdrop}
+                        >
+                            <BottomSheetContentContainer>
+                                <Source colors={colors}>Select image source</Source>
+                                <SourceContainer>
+                                    <SourceBackground
+                                        colors={colors}
+                                        activeOpacity={0.7}
+                                        onPress={handleCamera}
+                                    >
+                                        <SourceImages source={require("../../../../assets/icons/camera.png")} />
+                                    </SourceBackground>
+                                    <SourceBackground
+                                        colors={colors}
+                                        onPress={selectImageFromGallery}
+                                        activeOpacity={0.7}
+                                    >
+                                        <SourceImages source={require("../../../../assets/icons/gallery.png")} />
+                                    </SourceBackground>
+                                </SourceContainer>
+                            </BottomSheetContentContainer>
+                        </BottomSheetModal>
+
+                    </KeyboardAvoidingView>
+                </ScrollView>
             </BackgroundContainer>
-
-
         </BottomSheetModalProvider>
+
     )
 }
 

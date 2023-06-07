@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { mScale, vScale } from '../../../infrastructure/utilities/utilFunctions';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Button } from "../../../ui_elements/buttons";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 
@@ -20,8 +21,9 @@ import { Button } from "../../../ui_elements/buttons";
 export const SignUp = ({ navigation }) => {
     const { colors } = useContext(ThemeContext)
     const colorScheme = useColorScheme()
+    const { inset } = useSafeAreaInsets()
     return (
-        <BackgroundContainer colors={colors}>
+        <BackgroundContainer colors={colors} inset={inset}>
             <SignUpText colors={colors}>Create Your Account</SignUpText>
 
             <KeyboardAvoidingView>
@@ -42,7 +44,7 @@ export const SignUp = ({ navigation }) => {
                         password={true}
                         IconStart={() => <Entypo name="lock" size={20} color={colors.textColor} />}
                     />
-                        <Input
+                    <Input
                         placeholder="Confirm Password"
                         keyboardType="password"
                         KeyboardAppearance={colorScheme}
@@ -102,13 +104,17 @@ export const SignUp = ({ navigation }) => {
 }
 
 
-const BackgroundContainer = styled.View`
-    flex: 1;
+const BackgroundContainer = styled.ScrollView.attrs({
+    contentContainerStyle: {
+        flexGrow: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        gap: `${vScale(30)}`,
+    }
+})`
     background-color: ${({ colors }) => colors.backgroundColor};
     padding-horizontal: ${mScale(20)}px;
-    justify-content: center;
-    align-items: center;
-    gap:${mScale(30)}px;
+    padding-vertical:${({ inset }) => inset}px;
 `
 const SignUpText = styled.Text`
     font-size: ${mScale(35)}px;
@@ -128,7 +134,7 @@ const RememberText = styled.Text`
 `
 const Line = styled.View`
     border-bottom-color: ${({ colors }) => colors.lineColor};
-    border-bottom-width: 1px;
+    border-bottom-width: 1 px;
     width:${mScale(150)}px;
     margin-horizontal:${mScale(5)}px;
 `
