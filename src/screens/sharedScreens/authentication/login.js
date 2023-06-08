@@ -26,7 +26,6 @@ export const Login = ({ navigation }) => {
                         />
                         <Input
                             placeholder="Password"
-                            keyboardType="password"
                             KeyboardAppearance={colorScheme}
                             clearButtonMode="unless-editing"
                             password={true}
@@ -43,7 +42,11 @@ export const Login = ({ navigation }) => {
                     <RememberText>Remember me</RememberText>
                 </RememberContainer>
 
-                <Button onPress={() => navigation.navigate("fillProfile")}>Login</Button>
+            <Button onPress={() => navigation.navigate("fillProfile")}>Login</Button>
+            
+            <ForgotPasswordText colors={colors}
+                onPress={() => navigation.navigate("forgotPassword")}
+            >Forgot password?</ForgotPasswordText>
 
                 <AlternateSignUpContainer>
                     <LineContainer>
@@ -57,7 +60,7 @@ export const Login = ({ navigation }) => {
                         >
                             <ButtonContent>
                                 <Social source={require("../../../../assets/icons/google.png")} />
-                                <ButtonText colors={colors}>Login with Google</ButtonText>
+                                <ButtonText colors={colors}>Continue with Google</ButtonText>
                             </ButtonContent>
 
                         </Button>
@@ -68,7 +71,7 @@ export const Login = ({ navigation }) => {
                                 >
                                     <ButtonContent>
                                         <Social source={require("../../../../assets/icons/apple-logo.png")} />
-                                        <ButtonText colors={colors}>Login with Apple</ButtonText>
+                                        <ButtonText colors={colors}>Continue with Apple</ButtonText>
                                     </ButtonContent>
                                 </Button>
                                 : null
@@ -84,16 +87,13 @@ export const Login = ({ navigation }) => {
 }
 
 
-const BackgroundContainer = styled.ScrollView.attrs({
-    contentContainerStyle: {
-        flexGrow: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        gap: `${mScale(20)}px`
-    },
-})`
+const BackgroundContainer = styled.View`
+    flex: 1;
     background-color: ${({ colors }) => colors.backgroundColor};
     padding-horizontal: ${mScale(20)}px;
+    justify-content: center;
+    align-items: center;
+    gap:${mScale(30)}px;
 `
 const SignUpText = styled.Text`
     font-size: ${mScale(35)}px;
@@ -151,4 +151,9 @@ const ActiveAccount = styled.Text`
 const SignIn = styled.Text`
     color: ${({ colors }) => colors.primary};
     margin-left: ${mScale(5)}px;
+`
+const ForgotPasswordText = styled.Text`
+    color: ${({ colors }) => colors.primary};
+    font-size: ${mScale(14)}px;
+    font-weight: 600;
 `

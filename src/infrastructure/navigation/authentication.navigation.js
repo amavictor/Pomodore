@@ -7,6 +7,8 @@ import { SignUp } from "../../screens/sharedScreens/authentication/signUp";
 import { FillProfile } from "../../screens/sharedScreens/authentication/fillProfile";
 import { Login } from "../../screens/sharedScreens/authentication/login";
 import { CameraComponent } from "../../screens/sharedScreens/authentication/components/camera";
+import { ForgotPassword } from "../../screens/sharedScreens/authentication/forgot-password";
+import { OtpVerification } from "../../screens/sharedScreens/authentication/OtpVerification";
 
 
 const Stack = createStackNavigator()
@@ -39,7 +41,8 @@ export const AuthenticationNavigator = () => {
             />
             <Stack.Screen name="login" component={Login} />
             <Stack.Screen name="camera" component={CameraComponent} />
-            {/* <Stack.Screen name="forgotPassword" component={null}/> */}
+            <Stack.Screen name="forgotPassword" component={ForgotPassword} />
+            <Stack.Screen name="oto_verification" component={OtpVerification} />
 
         </Stack.Navigator>
     )

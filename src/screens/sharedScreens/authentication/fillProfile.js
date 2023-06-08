@@ -94,87 +94,83 @@ export const FillProfile = ({ navigation, route }) => {
     return (
         <BottomSheetModalProvider>
             <BackgroundContainer colors={colors} insets={insets}>
-                <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-                    <KeyboardAvoidingView behavior="padding">
-                        <TitleContainer>
-                            <TitleText colors={colors}>Fill your profile</TitleText>
-                            <TitleDescription colors={colors}>
-                                Don't worry you can always change this later or you can skip this for now
-                            </TitleDescription>
-                        </TitleContainer>
-                        <ProfileDetailsContainer>
-                            <AvatarContainer
-                                onPress={handleSelectImageSource}
-                            >
-                                <Stack center spacing={4}>
-                                    {/* <Avatar label="Kent Dodds" autoColor />
+                <TitleContainer>
+                    <TitleText colors={colors}>Fill your profile</TitleText>
+                    <TitleDescription colors={colors}>
+                        Don't worry you can always change this later or you can skip this for now
+                    </TitleDescription>
+                </TitleContainer>
+                <ProfileDetailsContainer>
+                    <AvatarContainer
+                        onPress={handleSelectImageSource}
+                    >
+                        <Stack center spacing={4}>
+                            {/* <Avatar label="Kent Dodds" autoColor />
                             <Avatar image={{ uri: "https://mui.com/static/images/avatar/1.jpg" }} /> */}
-                                    <Avatar
-                                        icon={props => <Icon name="account" {...props} />}
-                                        size={150}
-                                        color={colors.buttonOutlineColor}
-                                        tintColor={colors.primary}
-                                        image={image && { uri: image }}
-                                    />
-                                </Stack>
-                                <EditIcon
-                                    source={require("../../../../assets/icons/pencil.png")}
-                                />
-                            </AvatarContainer>
+                            <Avatar
+                                icon={props => <Icon name="account" {...props} />}
+                                size={150}
+                                color={colors.buttonOutlineColor}
+                                tintColor={colors.primary}
+                                image={image && { uri: image }}
+                            />
+                        </Stack>
+                        <EditIcon
+                            source={require("../../../../assets/icons/pencil.png")}
+                        />
+                    </AvatarContainer>
 
-                            <InputContainer>
-                                <Input
-                                    placeholder="Full name "
-                                />
-                                <Input
-                                    placeholder="Nickname"
-                                />
-                            </InputContainer>
-
-
-                        </ProfileDetailsContainer>
-                        <ButtonContainer>
-                            <Button width={`${mScale(160)}}`} alternate>Skip</Button>
-                            <Button width={`${mScale(160)}}`}>Start</Button>
-                        </ButtonContainer>
-
-                        <BottomSheetModal
-                            ref={bottomSheetModalRef}
-                            index={0}
-                            snapPoints={snapPoints}
-                            enablePanDownToClose={true}
-                            backgroundStyle={{
-                                borderRadius: 25,
-                                backgroundColor: `${colors.backgroundColor}`
-                            }}
-                            handleIndicatorStyle={{
-                                backgroundColor: `${colors.primary}`
-                            }}
-                            backdropComponent={CustomBackdrop}
-                        >
-                            <BottomSheetContentContainer>
-                                <Source colors={colors}>Select image source</Source>
-                                <SourceContainer>
-                                    <SourceBackground
-                                        colors={colors}
-                                        activeOpacity={0.7}
-                                        onPress={handleCamera}
-                                    >
-                                        <SourceImages source={require("../../../../assets/icons/camera.png")} />
-                                    </SourceBackground>
-                                    <SourceBackground
-                                        colors={colors}
-                                        onPress={selectImageFromGallery}
-                                        activeOpacity={0.7}
-                                    >
-                                        <SourceImages source={require("../../../../assets/icons/gallery.png")} />
-                                    </SourceBackground>
-                                </SourceContainer>
-                            </BottomSheetContentContainer>
-                        </BottomSheetModal>
-
+                    <KeyboardAvoidingView behavior="height">
+                        <InputContainer>
+                            <Input
+                                placeholder="Full name "
+                            />
+                            <Input
+                                placeholder="Nickname"
+                            />
+                        </InputContainer>
                     </KeyboardAvoidingView>
-                </ScrollView>
+
+                </ProfileDetailsContainer>
+                <ButtonContainer>
+                    <Button width={`${mScale(160)}}`} alternate>Skip</Button>
+                    <Button width={`${mScale(160)}}`}>Start</Button>
+                </ButtonContainer>
+
+                <BottomSheetModal
+                    ref={bottomSheetModalRef}
+                    index={0}
+                    snapPoints={snapPoints}
+                    enablePanDownToClose={true}
+                    backgroundStyle={{
+                        borderRadius: 25,
+                        backgroundColor: `${colors.backgroundColor}`
+                    }}
+                    handleIndicatorStyle={{
+                        backgroundColor: `${colors.primary}`
+                    }}
+                    backdropComponent={CustomBackdrop}
+                >
+                    <BottomSheetContentContainer>
+                        <Source colors={colors}>Select image source</Source>
+                        <SourceContainer>
+                            <SourceBackground
+                                colors={colors}
+                                activeOpacity={0.7}
+                                onPress={handleCamera}
+                            >
+                                <SourceImages source={require("../../../../assets/icons/camera.png")} />
+                            </SourceBackground>
+                            <SourceBackground
+                                colors={colors}
+                                onPress={selectImageFromGallery}
+                                activeOpacity={0.7}
+                            >
+                                <SourceImages source={require("../../../../assets/icons/gallery.png")} />
+                            </SourceBackground>
+                        </SourceContainer>
+                    </BottomSheetContentContainer>
+                </BottomSheetModal>
             </BackgroundContainer>
         </BottomSheetModalProvider>
 
@@ -183,14 +179,18 @@ export const FillProfile = ({ navigation, route }) => {
 
 
 
-const BackgroundContainer = styled.View` 
-    padding-top: ${({ insets }) => insets.top}px;
-    flex: 1;
-    padding-horizontal: ${mScale(20)}px;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-    gap: 80%;
+const BackgroundContainer = styled.ScrollView.attrs(({ inset }) => ({
+    contentContainerStyle: {
+        flexGrow: 1,
+        flex:1,
+        height:"100%",
+        paddingHorizontal: mScale(20),
+        paddingVertical: inset,
+        gap: "100%",
+        justifyContent: "center",
+        alignItems: "center"
+    }
+}))`
     background-color: ${({ colors }) => colors.backgroundColor};
 `
 const TitleContainer = styled.View`

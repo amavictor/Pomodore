@@ -26,7 +26,7 @@ export const SignUp = ({ navigation }) => {
         <BackgroundContainer colors={colors} inset={inset}>
             <SignUpText colors={colors}>Create Your Account</SignUpText>
 
-            <KeyboardAvoidingView>
+            <KeyboardAvoidingView behavior="padding">
                 <InputsContainer>
                     <Input
                         placeholder="Email"
@@ -38,16 +38,16 @@ export const SignUp = ({ navigation }) => {
                     />
                     <Input
                         placeholder="Password"
-                        keyboardType="password"
                         KeyboardAppearance={colorScheme}
+                        KeyboardType="default"
                         clearButtonMode="unless-editing"
                         password={true}
                         IconStart={() => <Entypo name="lock" size={20} color={colors.textColor} />}
                     />
                     <Input
                         placeholder="Confirm Password"
-                        keyboardType="password"
                         KeyboardAppearance={colorScheme}
+                        KeyboardType="default"
                         clearButtonMode="unless-editing"
                         password={true}
                         IconStart={() => <Entypo name="lock" size={20} color={colors.textColor} />}
@@ -104,18 +104,18 @@ export const SignUp = ({ navigation }) => {
 }
 
 
-const BackgroundContainer = styled.ScrollView.attrs({
+const BackgroundContainer = styled.ScrollView.attrs(({ inset }) => ({
     contentContainerStyle: {
-        flexGrow: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        gap: `${vScale(30)}`,
+      flexGrow: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      gap: vScale(20),
+      paddingVertical: inset,
+      paddingHorizontal: mScale(20)
     }
-})`
+  }))`
     background-color: ${({ colors }) => colors.backgroundColor};
-    padding-horizontal: ${mScale(20)}px;
-    padding-vertical:${({ inset }) => inset}px;
-`
+  `;
 const SignUpText = styled.Text`
     font-size: ${mScale(35)}px;
     color: ${({ colors }) => colors.textColor};
@@ -172,4 +172,4 @@ const ActiveAccount = styled.Text`
 const SignIn = styled.Text`
     color: ${({ colors }) => colors.primary};
     margin-left: ${mScale(5)}px;
-`
+` 
