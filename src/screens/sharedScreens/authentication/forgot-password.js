@@ -30,9 +30,7 @@ export const ForgotPassword = ({navigation}) => {
                     IconStart={() => <Ionicons name="mail" size={20} color={colors.textColor} />}
                 />
             </KeyboardAvoidingView>
-            <ButtonCustom
-                onPress={()=>navigation.navigate("otp_verification")}
-            >Continue</ButtonCustom>
+            <ButtonCustom onPress={()=>navigation.navigate("otp_verification")}>Continue</ButtonCustom>
 
         </PasswordContainer>
     )

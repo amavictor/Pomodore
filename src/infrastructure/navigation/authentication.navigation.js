@@ -42,8 +42,7 @@ export const AuthenticationNavigator = () => {
             <Stack.Screen name="login" component={Login} />
             <Stack.Screen name="camera" component={CameraComponent} />
             <Stack.Screen name="forgotPassword" component={ForgotPassword} />
-            <Stack.Screen name="oto_verification" component={OtpVerification} />
-
+            <Stack.Screen name="otp_verification" component={OtpVerification} />
         </Stack.Navigator>
     )
 }
