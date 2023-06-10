@@ -21,9 +21,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export const SignUp = ({ navigation }) => {
     const { colors } = useContext(ThemeContext)
     const colorScheme = useColorScheme()
-    const { inset } = useSafeAreaInsets()
+    const insets = useSafeAreaInsets()
     return (
-        <BackgroundContainer colors={colors} inset={inset}>
+        <BackgroundContainer colors={colors} inset={insets}>
             <SignUpText colors={colors}>Create Your Account</SignUpText>
 
             <KeyboardAvoidingView behavior="padding">
@@ -106,14 +106,15 @@ export const SignUp = ({ navigation }) => {
 
 const BackgroundContainer = styled.ScrollView.attrs(({ inset }) => ({
     contentContainerStyle: {
-      flexGrow: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      gap: vScale(20),
-      paddingVertical: inset,
-      paddingHorizontal: mScale(20)
+        flexGrow: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        gap: vScale(20),
+        paddingTop: inset.top,
+        paddingBottom: inset.bottom,
+        paddingHorizontal: mScale(20)
     }
-  }))`
+}))`
     background-color: ${({ colors }) => colors.backgroundColor};
   `;
 const SignUpText = styled.Text`

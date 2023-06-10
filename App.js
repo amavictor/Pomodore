@@ -9,12 +9,10 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <ThemeContextProvider>
-      
           <NavigationContainer>
             <Navigation />
           </NavigationContainer>
           <StatusBar style="auto" />
-
       </ThemeContextProvider>
     </SafeAreaProvider>
   );

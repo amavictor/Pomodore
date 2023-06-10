@@ -8,13 +8,13 @@ import { Input } from "../../../ui_elements/input"
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from "../../../ui_elements/buttons"
 export const ForgotPassword = ({navigation}) => {
-    const { inset } = useSafeAreaInsets()
+    const insets = useSafeAreaInsets()
     const { width, height } = Dimensions.get("window")
     const { colors } = useContext(ThemeContext)
     return (
         <PasswordContainer
             colors={colors}
-            inset={inset}
+            inset={insets}
             keyboardDismissMode={"on-drag"}
         >
             <ImageContainer>
@@ -39,7 +39,8 @@ export const ForgotPassword = ({navigation}) => {
 const PasswordContainer = styled.ScrollView.attrs(({ inset }) => ({
     contentContainerStyle: {
         flexGrow: 1,
-        paddingVertical: inset,
+        paddingTop: inset.top,
+        paddingBottom: inset.bottom,
         paddingHorizontal: mScale(20),
         alignItems: "center",  
         gap: vScale(70),

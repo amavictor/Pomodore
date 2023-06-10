@@ -179,13 +179,14 @@ export const FillProfile = ({ navigation, route }) => {
 
 
 
-const BackgroundContainer = styled.ScrollView.attrs(({ inset }) => ({
+const BackgroundContainer = styled.ScrollView.attrs(({ insets }) => ({
     contentContainerStyle: {
         flexGrow: 1,
         flex:1,
         height:"100%",
         paddingHorizontal: mScale(20),
-        paddingVertical: inset,
+        paddingTop: insets.top,
+        paddingBottom: insets.bottom,
         gap: "100%",
         justifyContent: "center",
         alignItems: "center"
