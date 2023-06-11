@@ -1,6 +1,11 @@
 import styled from "styled-components/native"
 import { useContext } from "react"
-import { KeyboardAvoidingView, ScrollView, Text } from "react-native"
+import {
+    KeyboardAvoidingView,
+    Keyboard,
+    Text,
+    TouchableWithoutFeedback
+} from "react-native"
 import { useColorScheme } from "react-native"
 import { Input } from "../../../ui_elements/input"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
@@ -12,7 +17,8 @@ export const Login = ({ navigation }) => {
     const { colors } = useContext(ThemeContext)
     const colorScheme = useColorScheme()
     return (
-        <BackgroundContainer colors={colors}>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <BackgroundContainer colors={colors}>
                 <SignUpText colors={colors}>Login To Your Account</SignUpText>
                 <KeyboardAvoidingView behavior="padding">
                     <InputsContainer>
@@ -42,11 +48,11 @@ export const Login = ({ navigation }) => {
                     <RememberText>Remember me</RememberText>
                 </RememberContainer>
 
-            <Button onPress={() => navigation.navigate("fillProfile")}>Login</Button>
-            
-            <ForgotPasswordText colors={colors}
-                onPress={() => navigation.navigate("forgotPassword")}
-            >Forgot password?</ForgotPasswordText>
+                <Button onPress={() => navigation.navigate("fillProfile")}>Login</Button>
+
+                <ForgotPasswordText colors={colors}
+                    onPress={() => navigation.navigate("forgotPassword")}
+                >Forgot password?</ForgotPasswordText>
 
                 <AlternateSignUpContainer>
                     <LineContainer>
@@ -82,7 +88,8 @@ export const Login = ({ navigation }) => {
                     Already have an account?
                     <SignIn colors={colors}>Sign In</SignIn>
                 </ActiveAccount>
-        </BackgroundContainer>
+            </BackgroundContainer>
+        </TouchableWithoutFeedback>
     )
 }
 

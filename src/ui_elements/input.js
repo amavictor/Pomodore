@@ -65,6 +65,7 @@ const InputElement = styled.TextInput`
     width: 75%;
     color: ${({ colors }) => colors.textColor};
     font-weight: 500;
+    height:100%
 `
 const IconContainer = styled.View`
 

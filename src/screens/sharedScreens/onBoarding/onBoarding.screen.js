@@ -136,7 +136,7 @@ const Slider = styled(FlatList).attrs({
 const ButtonContainer = styled.View`
   margin-top: 10%;
   width:100%;
-  gap:${mScale(30)}px;
+  gap:${mScale(10)}px;
   padding-horizontal: ${mScale(20)}px;
 `
 const OnBoardImage = styled.Image`
