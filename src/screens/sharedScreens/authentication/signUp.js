@@ -2,7 +2,9 @@ import styled from "styled-components/native"
 import {
     View,
     Text,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    Alert,
+    Keyboard
 } from "react-native"
 import { useColorScheme } from "react-native"
 import { Input } from "../../../ui_elements/input"
@@ -14,14 +16,66 @@ import { mScale, vScale } from '../../../infrastructure/utilities/utilFunctions'
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Button } from "../../../ui_elements/buttons";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useState } from 'react';
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth, googleSignIn } from "../../../infrastructure/utilities/firebaseUtils/firebase";
+import { AuthContext } from "../../../infrastructure/authContext/authContext";
+import * as Haptics from 'expo-haptics';
+import { ActivityIndicator } from "@react-native-material/core";
+
 
 
 
 
 export const SignUp = ({ navigation }) => {
+    const { user, setUser } = useContext(AuthContext)
     const { colors } = useContext(ThemeContext)
+    const [isLoading, setIsLoading] = useState(false)
     const colorScheme = useColorScheme()
     const insets = useSafeAreaInsets()
+    const [signupDetails, setSignupDetails] = useState({
+        email: "",
+        password: "",
+        confirmPassword: ""
+    })
+
+    const signUp = async (details) => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+        Keyboard.dismiss()
+        const { email, password } = signupDetails
+        if (signupDetails.password !== signupDetails.confirmPassword) {
+            Alert.alert("Passwords do not match")
+            return
+        }
+
+        try {
+            setIsLoading(true)
+            const response = await createUserWithEmailAndPassword(auth, email, password)
+            setUser(response.user)
+            console.log(user)
+            setIsLoading(false)
+        }
+        catch (e) {
+            Alert.alert(e.message)
+            setIsLoading(false)
+        }
+        finally {
+            setIsLoading(false)
+        }
+
+        // navigation.navigate("fillProfile")
+    }
+
+    const googleLogin = async () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+        const provider = new GoogleAuthProvider();
+        try {
+            const response = await signInWithPopup(auth, provider)
+            console.log(response.user)
+        } catch (e) {
+            Alert.alert(e.message);
+        }
+    };
     return (
         <BackgroundContainer colors={colors} inset={insets}>
             <SignUpText colors={colors}>Create Your Account</SignUpText>
@@ -34,6 +88,8 @@ export const SignUp = ({ navigation }) => {
                         keyboardType="email-address"
                         KeyboardAppearance={colorScheme}
                         clearButtonMode="unless-editing"
+                        value={signupDetails.email}
+                        onChangeText={(text) => setSignupDetails({ ...signupDetails, email: text })}
                         IconStart={() => <Ionicons name="mail" size={20} color={colors.textColor} />}
                     />
                     <Input
@@ -41,6 +97,8 @@ export const SignUp = ({ navigation }) => {
                         KeyboardAppearance={colorScheme}
                         KeyboardType="default"
                         clearButtonMode="unless-editing"
+                        value={signupDetails.password}
+                        onChangeText={(text) => setSignupDetails({ ...signupDetails, password: text })}
                         password={true}
                         IconStart={() => <Entypo name="lock" size={20} color={colors.textColor} />}
                     />
@@ -48,6 +106,8 @@ export const SignUp = ({ navigation }) => {
                         placeholder="Confirm Password"
                         KeyboardAppearance={colorScheme}
                         KeyboardType="default"
+                        value={signupDetails.confirmPassword}
+                        onChangeText={(text) => setSignupDetails({ ...signupDetails, confirmPassword: text })}
                         clearButtonMode="unless-editing"
                         password={true}
                         IconStart={() => <Entypo name="lock" size={20} color={colors.textColor} />}
@@ -63,7 +123,12 @@ export const SignUp = ({ navigation }) => {
                 <RememberText>Remember me</RememberText>
             </RememberContainer>
 
-            <Button onPress={() => navigation.navigate("fillProfile")}>Sign Up</Button>
+            <Button onPress={signUp}>{
+                isLoading ?
+                    <ActivityIndicator size="small" color="#ffff" /> :
+                    "Sign Up"
+            }
+            </Button>
 
             <AlternateSignUpContainer>
                 <LineContainer>
@@ -74,10 +139,13 @@ export const SignUp = ({ navigation }) => {
                 <SocialSignUpContainer>
                     <Button
                         outline
+                        onPress={googleLogin}
                     >
                         <ButtonContent>
                             <Social source={require("../../../../assets/icons/google.png")} />
-                            <ButtonText colors={colors}>Sign Up with Google</ButtonText>
+                            <ButtonText
+                                colors={colors}
+                            >Sign Up with Google</ButtonText>
                         </ButtonContent>
 
                     </Button>
@@ -97,7 +165,7 @@ export const SignUp = ({ navigation }) => {
             </AlternateSignUpContainer>
             <ActiveAccount colors={colors}>
                 Already have an account?
-                <SignIn colors={colors}>Sign In</SignIn>
+                <SignIn colors={colors} onPress={() => navigation.navigate("login")}>Sign In</SignIn>
             </ActiveAccount>
         </BackgroundContainer>
     )
@@ -110,7 +178,7 @@ const BackgroundContainer = styled.ScrollView.attrs(({ inset }) => ({
         justifyContent: "center",
         alignItems: "center",
         gap: vScale(20),
-        paddingTop: inset.top,
+        paddingTop: inset.top + mScale(30),
         paddingBottom: inset.bottom,
         paddingHorizontal: mScale(20)
     }

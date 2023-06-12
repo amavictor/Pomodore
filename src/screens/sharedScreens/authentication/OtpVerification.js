@@ -21,6 +21,7 @@ export const OtpVerification = ({ navigation }) => {
         <ScrollView
             contentContainerStyle={{
                 flex: 1,
+                
             }}
             keyboardShouldPersistTaps="handled"
         >

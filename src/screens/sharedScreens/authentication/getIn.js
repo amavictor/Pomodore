@@ -12,7 +12,7 @@ import { mScale } from '../../../infrastructure/utilities/utilFunctions';
 import { Button } from "../../../ui_elements/buttons";
 
 
-export const GetIn = ({navigation}) => {
+export const GetIn = ({ navigation }) => {
 
     const { colors } = useContext(ThemeContext)
 
@@ -31,14 +31,13 @@ export const GetIn = ({navigation}) => {
                 </Button>
 
                 {Platform.OS === "ios" &&
-                    <Button outline>
-                        <ButtonContent>
-                            <SocialImage source={require("../../../../assets/icons/apple-logo.png")} />
-                            <SocialText colors={colors}>
-                                Continue with Apple
-                            </SocialText>
-                        </ButtonContent>
-                    </Button>}
+                    <Button outline={true}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: mScale(10) }}>
+                            <SocialImage source={require("../../../../assets/icons/google.png")} />
+                            <SocialText colors={colors}>Continue with Google</SocialText>
+                        </View>
+                    </Button>
+                }
             </ButtonContainer>
 
             <LineContainer>
@@ -62,7 +61,7 @@ export const GetIn = ({navigation}) => {
                 </SignUpText>
             </AccountText>
 
-            
+
 
         </Container>
     )

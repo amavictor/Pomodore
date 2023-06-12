@@ -1,10 +1,11 @@
 import styled from "styled-components/native"
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import {
     KeyboardAvoidingView,
     Keyboard,
     Text,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    Alert,
 } from "react-native"
 import { useColorScheme } from "react-native"
 import { Input } from "../../../ui_elements/input"
@@ -13,12 +14,54 @@ import { mScale, vScale } from "../../../infrastructure/utilities/utilFunctions"
 import { ThemeContext } from "../../../infrastructure/utilities/themeContext/themeContext"
 import { Button } from "../../../ui_elements/buttons"
 import { Ionicons, Entypo } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ActivityIndicator } from "@react-native-material/core"
+import { signInWithEmailAndPassword } from "firebase/auth"
+import { auth } from "../../../infrastructure/utilities/firebaseUtils/firebase"
+import * as Haptics from 'expo-haptics';
+import { AuthContext } from "../../../infrastructure/authContext/authContext"
 export const Login = ({ navigation }) => {
     const { colors } = useContext(ThemeContext)
     const colorScheme = useColorScheme()
+    const insets = useSafeAreaInsets()
+    const [isLoading, setIsLoading] = useState(false)
+    const [loginDetails, setLoginDetails] = useState({
+        email: "",
+        password: ""
+    })
+    const {user, setUser} = useContext(AuthContext)
+
+
+
+    const login = async (details) => {
+        Keyboard.dismiss()
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+        const { email, password } = loginDetails
+
+        try {
+            setIsLoading(true)
+            const response = await signInWithEmailAndPassword(auth, email, password)
+            setUser(response.user)
+            console.log(user)
+            setIsLoading(false)
+        }
+        catch (e) {
+            Alert.alert(e.message)
+            setIsLoading(false)
+        }
+        finally {
+            setIsLoading(false)
+        }
+
+        // navigation.navigate("fillProfile")
+        // () => navigation.navigate("fillProfile")
+    }
+
+
+
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-            <BackgroundContainer colors={colors}>
+            <BackgroundContainer colors={colors} insets={insets}>
                 <SignUpText colors={colors}>Login To Your Account</SignUpText>
                 <KeyboardAvoidingView behavior="padding">
                     <InputsContainer>
@@ -28,6 +71,8 @@ export const Login = ({ navigation }) => {
                             keyboardType="email-address"
                             KeyboardAppearance={colorScheme}
                             clearButtonMode="unless-editing"
+                            value={loginDetails.email}
+                            onChangeText={(text)=>setLoginDetails({...loginDetails, email: text})}
                             IconStart={() => <Ionicons name="mail" size={20} color={colors.textColor} />}
                         />
                         <Input
@@ -35,6 +80,8 @@ export const Login = ({ navigation }) => {
                             KeyboardAppearance={colorScheme}
                             clearButtonMode="unless-editing"
                             password={true}
+                            value={loginDetails.password}
+                            onChangeText={(text)=>setLoginDetails({...loginDetails, password: text})}
                             IconStart={() => <Entypo name="lock" size={20} color={colors.textColor} />}
                         />
                     </InputsContainer>
@@ -48,7 +95,13 @@ export const Login = ({ navigation }) => {
                     <RememberText>Remember me</RememberText>
                 </RememberContainer>
 
-                <Button onPress={() => navigation.navigate("fillProfile")}>Login</Button>
+                <Button onPress={login}>
+                    {
+                        isLoading ? <ActivityIndicator size={"small"} color="#fff" /> :
+                            "Login"
+                    }
+
+                </Button>
 
                 <ForgotPasswordText colors={colors}
                     onPress={() => navigation.navigate("forgotPassword")}
@@ -101,6 +154,7 @@ const BackgroundContainer = styled.View`
     justify-content: center;
     align-items: center;
     gap:${mScale(30)}px;
+    padding-top: ${({ insets }) => insets.top + mScale(20)}px;
 `
 const SignUpText = styled.Text`
     font-size: ${mScale(35)}px;

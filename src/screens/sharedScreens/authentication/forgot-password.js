@@ -47,7 +47,7 @@ export const ForgotPassword = ({ navigation }) => {
 
 const PasswordContainer = styled.View`
     background-color:${({ colors }) => colors.backgroundColor};
-    padding-top: ${({ inset }) => inset.top}px;
+    padding-top: ${({ inset }) => inset.top + mScale(50)}px;
     padding-bottom: ${({ inset }) => inset.bottom}px;
     padding-horizontal: ${mScale(20)}px;
     align-items: center;
