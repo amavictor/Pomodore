@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^4",
+    "@react-native-async-storage/async-storage": "1.17.11",
     "@react-native-material/core": "^1.3.7",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/stack": "^6.3.16",

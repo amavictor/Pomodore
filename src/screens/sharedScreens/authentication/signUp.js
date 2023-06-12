@@ -146,9 +146,10 @@ const LineContainer = styled.View`
     align-items: center;
     justify-content:center;
 `
-const AlternateSignUpContainer = styled.View`
 
-`
+const AlternateSignUpContainer = styled.View``
+
+
 const SocialSignUpContainer = styled.View`
     gap: ${mScale(10)}px;
     margin-top: ${mScale(15)}px;

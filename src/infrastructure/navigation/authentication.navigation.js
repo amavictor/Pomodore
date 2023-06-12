@@ -10,13 +10,59 @@ import { CameraComponent } from "../../screens/sharedScreens/authentication/comp
 import { ForgotPassword } from "../../screens/sharedScreens/authentication/forgot-password";
 import { OtpVerification } from "../../screens/sharedScreens/authentication/OtpVerification";
 import { ResetPassword } from "../../screens/sharedScreens/authentication/reset-password";
+import { useEffect } from 'react';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useState } from 'react';
+import { Alert } from 'react-native';
+import { mScale } from '../utilities/utilFunctions';
 
 
 const Stack = createStackNavigator()
 
 export const AuthenticationNavigator = () => {
+    const {colors} = useContext(ThemeContext)
+    const [onBoard, setOnboard] = useState(null)
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        (async function getOnboard() {
+            try {
+                const jsonValue = await AsyncStorage.getItem('@onBoarding');
+                if (jsonValue != null) {
+                    setOnboard(JSON.parse(jsonValue));
+                }
+            } catch (e) {
+                Alert.alert(e);
+            } finally {
+                setLoading(false);
+            }
+        })();
+    }, []);
+
+    if (loading) {
+        return null; // Render a loading indicator or any other placeholder component
+    }
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+            initialRouteName={onBoard ? "getIn" : "onBoarding"}
+            screenOptions={{
+                headerBackTitleVisible: false,
+                headerTransparent: true,
+                headerTitleAlign: "left",
+                headerLeftContainerStyle: {
+                    paddingLeft: mScale(20)
+                },
+                headerStyle: {
+                    backgroundColor: '#ffff',
+                    
+                },
+                headerTintColor: colors.textColor,
+                headerTitleStyle: {
+                    fontWeight: 'bold',
+                    fontSize: mScale(20)
+                },
+            }}
+        >
             <Stack.Screen
                 name="onBoarding"
                 component={OnBoardingScreen}
@@ -32,7 +78,13 @@ export const AuthenticationNavigator = () => {
                 }}
             />
             {/* <Stack.Screen name="signInOptions" component={null}/> */}
-            <Stack.Screen name="signUp" component={SignUp} />
+            <Stack.Screen
+                name="signUp"
+                component={SignUp}
+                options={{
+                    title: null,
+                }}
+            />
             <Stack.Screen
                 name="fillProfile"
                 component={FillProfile}
