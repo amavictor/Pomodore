@@ -7,13 +7,14 @@ import {
     useState
 } from 'react';
 import { auth } from "../utilities/firebaseUtils/firebase";
+import { React } from 'react';
 
 
 export const AuthContext = createContext()
 
 export const AuthContextProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(false)
-    const [user, setUser] = useState("")
+    const [user, setUser] = useState(null)
     const [error, setError] = useState(null)
 
     useEffect(() => {
@@ -43,3 +44,4 @@ export const AuthContextProvider = ({ children }) => {
         </AuthContext.Provider>
     )
 }
+

@@ -27,7 +27,8 @@ export const Login = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(false)
     const [loginDetails, setLoginDetails] = useState({
         email: "",
-        password: ""
+        password: "",
+        remember:false
     })
     const {user, setUser} = useContext(AuthContext)
 
@@ -42,8 +43,8 @@ export const Login = ({ navigation }) => {
             setIsLoading(true)
             const response = await signInWithEmailAndPassword(auth, email, password)
             setUser(response.user)
-            console.log(user)
             setIsLoading(false)
+            
         }
         catch (e) {
             Alert.alert(e.message)
@@ -91,6 +92,7 @@ export const Login = ({ navigation }) => {
                     <BouncyCheckbox
                         size={18}
                         fillColor={colors.primary}
+                        onPress={(isChecked)=>setLoginDetails({...loginDetails, remember:isChecked})}
                     />
                     <RememberText>Remember me</RememberText>
                 </RememberContainer>

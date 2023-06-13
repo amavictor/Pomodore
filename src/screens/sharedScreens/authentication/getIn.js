@@ -33,8 +33,8 @@ export const GetIn = ({ navigation }) => {
                 {Platform.OS === "ios" &&
                     <Button outline={true}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: mScale(10) }}>
-                            <SocialImage source={require("../../../../assets/icons/google.png")} />
-                            <SocialText colors={colors}>Continue with Google</SocialText>
+                            <SocialImage source={require("../../../../assets/icons/apple-logo.png")} />
+                            <SocialText colors={colors}>Continue with Apple</SocialText>
                         </View>
                     </Button>
                 }

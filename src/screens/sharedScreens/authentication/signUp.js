@@ -17,53 +17,61 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Button } from "../../../ui_elements/buttons";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState } from 'react';
-import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+    createUserWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithPopup
+} from "firebase/auth";
 import { auth, googleSignIn } from "../../../infrastructure/utilities/firebaseUtils/firebase";
 import { AuthContext } from "../../../infrastructure/authContext/authContext";
 import * as Haptics from 'expo-haptics';
-import { ActivityIndicator } from "@react-native-material/core";
+import { ActivityIndicator, Snackbar } from "@react-native-material/core";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 
 
 
 
-
-export const SignUp = ({ navigation }) => {
+export const SignUp = () => {
     const { user, setUser } = useContext(AuthContext)
     const { colors } = useContext(ThemeContext)
+    const navigation = useNavigation()
     const [isLoading, setIsLoading] = useState(false)
+    const [signInSuccess, setSignInSuccess] = useState(false)
     const colorScheme = useColorScheme()
     const insets = useSafeAreaInsets()
     const [signupDetails, setSignupDetails] = useState({
         email: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        remember: false
     })
 
-    const signUp = async (details) => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+
+
+    const signUp = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
         Keyboard.dismiss()
-        const { email, password } = signupDetails
-        if (signupDetails.password !== signupDetails.confirmPassword) {
+        setIsLoading(true)
+        const { email, password, confirmPassword } = signupDetails
+        if (password !== confirmPassword) {
             Alert.alert("Passwords do not match")
             return
         }
+        // setSignInSuccess(true)
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((response) => {
+                const user = response.user
+                setUser(user)
+                console.log(user)
+                setIsLoading(false)
+                navigation.navigate("fillProfile")
+            })
+            .catch(e => {
+                Alert.alert(e.message)
+                setIsLoading(false)
+            })
+        setIsLoading(false)
 
-        try {
-            setIsLoading(true)
-            const response = await createUserWithEmailAndPassword(auth, email, password)
-            setUser(response.user)
-            console.log(user)
-            setIsLoading(false)
-        }
-        catch (e) {
-            Alert.alert(e.message)
-            setIsLoading(false)
-        }
-        finally {
-            setIsLoading(false)
-        }
-
-        // navigation.navigate("fillProfile")
     }
 
     const googleLogin = async () => {
@@ -79,7 +87,6 @@ export const SignUp = ({ navigation }) => {
     return (
         <BackgroundContainer colors={colors} inset={insets}>
             <SignUpText colors={colors}>Create Your Account</SignUpText>
-
             <KeyboardAvoidingView behavior="padding">
                 <InputsContainer>
                     <Input
@@ -119,6 +126,7 @@ export const SignUp = ({ navigation }) => {
                 <BouncyCheckbox
                     size={18}
                     fillColor={colors.primary}
+                    onPress={(isChecked) => setSignupDetails({ ...signupDetails, remember: isChecked })}
                 />
                 <RememberText>Remember me</RememberText>
             </RememberContainer>
@@ -167,6 +175,7 @@ export const SignUp = ({ navigation }) => {
                 Already have an account?
                 <SignIn colors={colors} onPress={() => navigation.navigate("login")}>Sign In</SignIn>
             </ActiveAccount>
+
         </BackgroundContainer>
     )
 }
@@ -242,4 +251,9 @@ const ActiveAccount = styled.Text`
 const SignIn = styled.Text`
     color: ${({ colors }) => colors.primary};
     margin-left: ${mScale(5)}px;
-` 
+`
+const SnackBarNotify = styled(Snackbar)`
+    background-color: ${({ colors }) => colors.textColor};
+    width:100%;
+    
+`
