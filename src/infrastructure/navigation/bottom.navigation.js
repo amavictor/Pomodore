@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { HomeScreen } from '../../screens/sharedScreens/mainScreens/homeScreen';
+import { HomeNavigation } from "./home.navigation"
 
 
 export const BottomNavigation = () => {
@@ -7,8 +7,12 @@ export const BottomNavigation = () => {
     const Tab = createBottomTabNavigator()
 
     return (
-        <Tab.Navigator>
-            <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Navigator
+            screenOptions={{
+                headerShown: false
+            }}
+        >
+            <Tab.Screen name="Home" component={HomeNavigation} />
         </Tab.Navigator>
     )
 }

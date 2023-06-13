@@ -5,30 +5,35 @@ import { AuthenticationNavigator } from "./authentication.navigation";
 import { useContext } from "react";
 import { ThemeContext } from '../utilities/themeContext/themeContext';
 import { StatusBar } from 'react-native';
+import { AuthContext } from '../authContext/authContext';
+import { BottomNavigation } from "./bottom.navigation";
 
 
 const Stack = createStackNavigator()
 
 
+
 export const Navigation = () => {
 
+    const { user } = useContext(AuthContext)
+    console.log(user, "opopo")
     const { colors } = useContext(ThemeContext)
     return (
         <NavigationBackground colors={colors}>
-            <Stack.Navigator
-                screenOptions={{
-                    headerShown: false
-                }}
-            >
-                <Stack.Screen name="authentication" component={AuthenticationNavigator} />
-            </Stack.Navigator>
+            {/* {
+                user ?
+                    <BottomNavigation /> :
+                    <AuthenticationNavigator />
+            } */}
+            <AuthenticationNavigator />
+
         </NavigationBackground>
     )
 
 }
 
 const NavigationBackground = styled.View`
-    padding-top: ${Platform.OS === "android" ? StatusBar.currentHeight + "px"  : "0px"};
+    padding-top: ${Platform.OS === "android" ? StatusBar.currentHeight + "px" : "0px"};
     height: 100%;
     background-color: ${({ colors }) => colors.backgroundColor};
 `

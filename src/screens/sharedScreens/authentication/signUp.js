@@ -4,7 +4,7 @@ import {
     Text,
     KeyboardAvoidingView,
     Alert,
-    Keyboard
+    Keyboard,
 } from "react-native"
 import { useColorScheme } from "react-native"
 import { Input } from "../../../ui_elements/input"
@@ -25,7 +25,7 @@ import {
 import { auth, googleSignIn } from "../../../infrastructure/utilities/firebaseUtils/firebase";
 import { AuthContext } from "../../../infrastructure/authContext/authContext";
 import * as Haptics from 'expo-haptics';
-import { ActivityIndicator, Snackbar } from "@react-native-material/core";
+import { Snackbar, ActivityIndicator } from "@react-native-material/core";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 
 
@@ -35,8 +35,7 @@ export const SignUp = () => {
     const { user, setUser } = useContext(AuthContext)
     const { colors } = useContext(ThemeContext)
     const navigation = useNavigation()
-    const [isLoading, setIsLoading] = useState(false)
-    const [signInSuccess, setSignInSuccess] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const colorScheme = useColorScheme()
     const insets = useSafeAreaInsets()
     const [signupDetails, setSignupDetails] = useState({
@@ -51,26 +50,38 @@ export const SignUp = () => {
     const signUp = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
         Keyboard.dismiss()
-        setIsLoading(true)
         const { email, password, confirmPassword } = signupDetails
         if (password !== confirmPassword) {
             Alert.alert("Passwords do not match")
             return
         }
-        // setSignInSuccess(true)
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((response) => {
-                const user = response.user
-                setUser(user)
-                console.log(user)
-                setIsLoading(false)
-                navigation.navigate("fillProfile")
-            })
-            .catch(e => {
-                Alert.alert(e.message)
-                setIsLoading(false)
-            })
-        setIsLoading(false)
+        else if (email === "" || password === "" || confirmPassword === "") {
+            Alert.alert("Please fill in all fields")
+            return
+        }
+        else {
+            setIsLoading(true)
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((response) => {
+                    const user = response.user
+                    setUser(user)
+                    setIsLoading(false)
+                    navigation.dispatch(
+                        CommonActions.reset({
+                            index: 0,
+                            routes: [{ name: "fillProfile" }],
+                        })
+                    )
+                })
+                .catch(e => {
+                    Alert.alert(e.message)
+                    setSignInFail(true)
+                    setIsLoading(false)
+                })
+            setIsLoading(false)
+        }
+
+
 
     }
 
@@ -133,7 +144,7 @@ export const SignUp = () => {
 
             <Button onPress={signUp}>{
                 isLoading ?
-                    <ActivityIndicator size="small" color="#ffff" /> :
+                    <ActivityIndicator size="small" color="white" /> :
                     "Sign Up"
             }
             </Button>
@@ -175,6 +186,22 @@ export const SignUp = () => {
                 Already have an account?
                 <SignIn colors={colors} onPress={() => navigation.navigate("login")}>Sign In</SignIn>
             </ActiveAccount>
+            {/* {
+                signInSuccess ?
+                    <SnackBarNotify
+                        colors={colors}
+                        message="Sign Up Successful                                                 ✅"
+                    /> :
+                    null
+            }
+            {
+                signInFail ?
+                    <SnackBarNotify
+                        colors={colors}
+                        message="Sign Up Failed                                                 ❌"
+                    /> :
+                    null
+            } */}
 
         </BackgroundContainer>
     )
