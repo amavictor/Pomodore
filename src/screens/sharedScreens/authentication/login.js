@@ -20,6 +20,7 @@ import { signInWithEmailAndPassword } from "firebase/auth"
 import { auth } from "../../../infrastructure/utilities/firebaseUtils/firebase"
 import * as Haptics from 'expo-haptics';
 import { AuthContext } from "../../../infrastructure/authContext/authContext"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 export const Login = ({ navigation }) => {
     const { colors } = useContext(ThemeContext)
     const colorScheme = useColorScheme()
@@ -42,9 +43,9 @@ export const Login = ({ navigation }) => {
         try {
             setIsLoading(true)
             const response = await signInWithEmailAndPassword(auth, email, password)
+            await AsyncStorage.setItem("@user", JSON.stringify(response.user))
             setUser(response.user)
             setIsLoading(false)
-            
         }
         catch (e) {
             Alert.alert(e.message)

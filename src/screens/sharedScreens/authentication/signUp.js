@@ -35,7 +35,7 @@ export const SignUp = () => {
     const { user, setUser } = useContext(AuthContext)
     const { colors } = useContext(ThemeContext)
     const navigation = useNavigation()
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
     const colorScheme = useColorScheme()
     const insets = useSafeAreaInsets()
     const [signupDetails, setSignupDetails] = useState({

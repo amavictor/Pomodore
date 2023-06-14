@@ -7,6 +7,8 @@ import { ThemeContext } from '../utilities/themeContext/themeContext';
 import { StatusBar } from 'react-native';
 import { AuthContext } from '../authContext/authContext';
 import { BottomNavigation } from "./bottom.navigation";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const Stack = createStackNavigator()
@@ -15,18 +17,27 @@ const Stack = createStackNavigator()
 
 export const Navigation = () => {
 
-    const { user } = useContext(AuthContext)
-    console.log(user, "opopo")
+    const {user, setUser } = useContext(AuthContext)
     const { colors } = useContext(ThemeContext)
+    const [persistUser, setPersistUSer] = useState()
+
+
+    useEffect(() => {
+        (async function getUser() {
+            const user = await AsyncStorage.getItem("@user")
+            if (user != null) {
+                setPersistUSer(JSON.parse(user))
+            }
+       })()
+    },[])
+
     return (
         <NavigationBackground colors={colors}>
-            {/* {
-                user ?
+            {
+                (user || persistUser) ?
                     <BottomNavigation /> :
                     <AuthenticationNavigator />
-            } */}
-            <AuthenticationNavigator />
-
+            }
         </NavigationBackground>
     )
 
