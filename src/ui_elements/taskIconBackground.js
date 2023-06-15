@@ -1,7 +1,7 @@
 import styled from "styled-components/native"
 import { mScale } from '../infrastructure/utilities/utilFunctions';
 import { color } from 'react-native-reanimated';
-import { useEffect,useContext } from "react";
+import { useEffect,useContext, useState } from "react";
 import { ThemeContext } from "../infrastructure/utilities/themeContext/themeContext";
 export const TaskIconBackground = ({ children }) => {
     const {colors} = useContext(ThemeContext)
@@ -32,9 +32,10 @@ export const TaskIconBackground = ({ children }) => {
 }
 
 const Background = styled.View`
-    width: ${mScale(40)}px;
+    width: ${mScale(35)}px;
+    height: ${mScale(35)}px;
     align-items:center;
     justify-content:center;
-    border-radius:${mScale(14)}px;
+    border-radius:${mScale(10)}px;
     background-color:${({color})=>color} ;
 `

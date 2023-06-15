@@ -1,12 +1,14 @@
 import styled from "styled-components/native"
-import { View, Text, Animated, PanResponder } from "react-native"
+import { View, Text, Animated, PanResponder, ScrollView } from "react-native"
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Backdrop, BackdropSubheader } from "@react-native-material/core";
+import { Backdrop, BackdropSubheader, Badge } from "@react-native-material/core";
 import { useState, useContext, useRef } from "react";
 import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
 import { mScale, vScale } from '../../../infrastructure/utilities/utilFunctions';
 import { Ionicons } from '@expo/vector-icons';
 import CircularProgress from "react-native-circular-progress-indicator";
+import { AudioIcon, CodingIcon, ExerciseIcon, MeditationIcon, ReadingIcon } from "../../../ui_elements/taskIcons/taskIcons";
+import { TaskCard } from "../../../ui_elements/taskCard";
 
 export const HomeScreen = () => {
     const insets = useSafeAreaInsets()
@@ -32,6 +34,61 @@ export const HomeScreen = () => {
             },
         })
     ).current;
+
+
+    const taskData = [
+        {
+            title: "Sing",
+            time: "57 minutes",
+            icon: <AudioIcon />
+        },
+        {
+            title: "Pray",
+            time: "57 minutes",
+            icon: <MeditationIcon />
+        },
+        {
+            title: "Read",
+            time: "57 minutes",
+            icon: <ReadingIcon />
+        },
+        {
+            title: "Gym",
+            time: "57 minutes",
+            icon: <ExerciseIcon />
+        },
+        {
+            title: "Code",
+            time: "57 minutes",
+            icon: <CodingIcon />
+        },
+        {
+            title: "Sing",
+            time: "57 minutes",
+            icon: <AudioIcon />
+        },
+        {
+            title: "Pray",
+            time: "57 minutes",
+            icon: <MeditationIcon />
+        },
+        {
+            title: "Read",
+            time: "57 minutes",
+            icon: <ReadingIcon />
+        },
+        {
+            title: "Gym",
+            time: "57 minutes",
+            icon: <ExerciseIcon />
+        },
+        {
+            title: "Code",
+            time: "57 minutes",
+            icon: <CodingIcon />
+        },
+    ]
+
     return (
         <HomeContainer insets={insets}>
             <Backdrop
@@ -73,6 +130,20 @@ export const HomeScreen = () => {
                         <Task colors={colors}>Today Tasks(0)</Task>
                         <SeeText colors={colors}>See All</SeeText>
                     </SeeAllMenu>
+
+                    <HomeContent
+                        showsVerticalScrollIndicator={false}
+                    >
+                        {taskData.map((task, index) => (
+                            <TaskCard
+                                key={index}
+                                title={task.title}
+                                time={task.time}
+                                icon={task.icon}
+                            />
+                        ))}
+                    </HomeContent>
+
                 </HomeContentContainer>
             </Backdrop>
 
@@ -86,7 +157,19 @@ const BackdropHeaderComponent = () => {
     return (
         <BackdropHeaderContainer insets={insets}>
             <MorningText>Morning Victor!</MorningText>
-            <Ionicons name="notifications-outline" size={30} color="white" />
+            <NotificationContainer>
+                <Badge
+                    label={0}
+                    showZero
+                    color="white"
+                    style={{
+                        position: "absolute",
+                        top: mScale(-10),
+                        right: mScale(-10),
+                    }}
+                />
+                <Ionicons name="notifications-outline" size={30} color="white" />
+            </NotificationContainer>
         </BackdropHeaderContainer>
     )
 }
@@ -132,6 +215,10 @@ const AuthorText = styled.Text`
     color: white;
     font-weight:800;
     margin-top:${mScale(10)};
+`
+const NotificationContainer = styled.View`
+    position:relative;
+
 `
 
 
@@ -180,7 +267,13 @@ const TextView = styled.View`
     width:${mScale(190)}px;
     align-items:flex-start;
 `
-const HomeContent = styled.ScrollView`
+const HomeContent = styled(ScrollView).attrs({
+    contentContainerStyle: {
+        justifyContent: "center",
+        gap: 30,
+        width: "100%"
+    }
+})`
 
 `
 const SeeAllMenu = styled.View`

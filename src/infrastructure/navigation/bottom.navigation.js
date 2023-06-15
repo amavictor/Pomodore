@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { HomeNavigation } from "./home.navigation"
 import { Ionicons } from '@expo/vector-icons';
 import { TaskNavigator } from "./task.navigation";
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { mScale, vScale } from '../utilities/utilFunctions';
 import { useContext } from 'react';
 import { ThemeContext } from '../utilities/themeContext/themeContext';
@@ -11,6 +11,7 @@ import { AddTaskNavigator } from './addTask.navigation';
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { StatisticsNavigation } from './statistic.navigation';
 import { ProfileNavigation } from './profile.navigation';
+import { BlurView } from "expo-blur";
 
 
 
@@ -97,9 +98,15 @@ export const BottomNavigation = () => {
                     },
                     shadowOpacity: 0.1,
                     shadowRadius: 20,
-                    zIndex:1
+                    zIndex: 1,
+                    backgroundColor:`transparent`,
 
-                },
+                }, 
+                tabBarBackground: () => (
+                    <TabBarBackground>
+                        <BlurView intensity={100} style={StyleSheet.absoluteFill}/>
+                    </TabBarBackground>
+                ),
                 tabBarIconStyle: {
                     justifySelf:"center"
                 }
@@ -114,3 +121,9 @@ export const BottomNavigation = () => {
     )
 }
 
+const TabBarBackground = styled.View`
+    flex: 1;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: ${mScale(15)}px;
+    overflow: hidden;
+`
