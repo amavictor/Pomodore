@@ -82,8 +82,9 @@ export const HomeScreen = () => {
 
 
 const BackdropHeaderComponent = () => {
+    const insets = useSafeAreaInsets()
     return (
-        <BackdropHeaderContainer>
+        <BackdropHeaderContainer insets={insets}>
             <MorningText>Morning Victor!</MorningText>
             <Ionicons name="notifications-outline" size={30} color="white" />
         </BackdropHeaderContainer>
@@ -104,11 +105,13 @@ const BackLayerComponent = () => {
 //backdrop styles 
 const BackdropHeaderContainer = styled.View`
     width:100%;
-    height:${mScale(100)}px;
+    height:${mScale(150)}px;
     justify-content:space-between;
     align-items:center;
     padding-horizontal:${mScale(20)}px;
     flex-direction:row;
+    padding-top:${({ insets }) => insets.top}px;
+    
 `
 const MorningText = styled.Text`
     color:"green" ;
@@ -135,7 +138,6 @@ const AuthorText = styled.Text`
 //Styles
 const HomeContainer = styled.View`
     flex:1;
-    padding-top:${({ insets }) => insets.top}px;
 `
 
 const HomeContentContainer = styled(Animated.View)`
@@ -166,7 +168,7 @@ const CircularProgressContainer = styled.View`
 const StatusText = styled.Text`
     font-weight:700;
     font-size:${mScale(18)}px;
-    color:${({colors})=>colors.textColor};
+    color:${({ colors }) => colors.textColor};
 `
 const CompletedText = styled.Text`
     font-size:${mScale(12)}px;
@@ -189,7 +191,7 @@ const SeeAllMenu = styled.View`
 const Task = styled.Text`
     font-weight:600;
     font-size:${mScale(16)}px;
-    color:${({ colors })=>colors.textColor};
+    color:${({ colors }) => colors.textColor};
 `
 const SeeText = styled.Text`
     font-size:${mScale(16)}px;
