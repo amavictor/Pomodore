@@ -46,6 +46,8 @@ const AddComponent = () => {
 const AddButton = styled.Text`
     font-size:${mScale(20)}px;
     color: #fff;
+    font-size:${mScale(30)}px;
+    font-weight:700;
 `
 export const BottomNavigation = () => {
 
