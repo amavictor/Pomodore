@@ -1,13 +1,15 @@
 import styled from "styled-components/native"
 import { mScale } from '../infrastructure/utilities/utilFunctions';
 import { PlayIcon } from "./taskIcons/taskIcons";
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import { ThemeContext } from '../infrastructure/utilities/themeContext/themeContext';
-import { View } from "react-native";
+import { View, Animated } from "react-native";
 export const TaskCard = ({
     title,
     time,
-    icon
+    icon,
+    index,
+    setInputRange
 }) => {
 
     const { colors } = useContext(ThemeContext)
@@ -19,10 +21,10 @@ export const TaskCard = ({
                 shadowColor: "#000",
                 shadowOffset: {
                     width: 1,
-                    height: mScale(10),
+                    height: mScale(5),
                 },
-                shadowOpacity: 0.1,
-                shadowRadius: 20,
+                shadowOpacity: 0.05,
+                shadowRadius: 8,
             }}
             colors={colors}
         >
@@ -39,7 +41,7 @@ export const TaskCard = ({
 }
 
 const Container = styled.View`
-    width: 100%;
+    width: 95%;
     height:${mScale(80)}px;
     padding: ${mScale(10)}px;
     flex-direction:row;
@@ -47,6 +49,7 @@ const Container = styled.View`
     align-items:center;
     background-color:${({ colors }) => colors.backgroundColor};
     border-radius: ${mScale(14)}px;
+    margin-vertical:${mScale(10)}px;
 `
 const Title = styled.Text`
     font-size:${mScale(16)}px;
