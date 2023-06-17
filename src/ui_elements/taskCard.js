@@ -8,12 +8,10 @@ export const TaskCard = ({
     title,
     time,
     icon,
-    index,
-    setInputRange
+    ...otherProps
 }) => {
 
     const { colors } = useContext(ThemeContext)
-
     return (
         <Container
             style={{
@@ -27,6 +25,7 @@ export const TaskCard = ({
                 shadowRadius: 8,
             }}
             colors={colors}
+            {...otherProps}
         >
             <ViewContainer>
                 {icon}
@@ -40,8 +39,8 @@ export const TaskCard = ({
     )
 }
 
-const Container = styled.View`
-    width: 95%;
+const Container = styled(Animated.View)`
+    width: 100%;
     height:${mScale(80)}px;
     padding: ${mScale(10)}px;
     flex-direction:row;
@@ -49,11 +48,10 @@ const Container = styled.View`
     align-items:center;
     background-color:${({ colors }) => colors.backgroundColor};
     border-radius: ${mScale(14)}px;
-    margin-vertical:${mScale(10)}px;
 `
 const Title = styled.Text`
-    font-size:${mScale(16)}px;
-    font-weight:500;
+    font-size:${mScale(18)}px;
+    font-weight:600;
     margin-bottom:${mScale(5)}px; ;
     color:${({ colors }) => colors.textColor};
 `

@@ -1,3 +1,4 @@
+import styled from "styled-components/native"
 import { View, Text, Animated } from "react-native"
 import { TaskCard } from "../../../ui_elements/taskCard"
 import {
@@ -7,13 +8,17 @@ import {
     ExerciseIcon,
     CodingIcon,
 } from "../../../ui_elements/taskIcons/taskIcons"
-import { useRef, useState } from "react"
+import { useRef, useContext } from "react"
+import { mScale, vScale } from '../../../infrastructure/utilities/utilFunctions';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
 
 
 export const TaskScreen = () => {
 
     const scrollY = useRef(new Animated.Value(0)).current
-    const [inputRange, setInputRange] = useState(null)
+    const insets = useSafeAreaInsets()
+    const { colors } = useContext(ThemeContext)
 
     const taskData = [
         {
@@ -98,31 +103,109 @@ export const TaskScreen = () => {
         },
     ]
 
+    const diffClamp = Animated.diffClamp(scrollY, 0, mScale(60))
+
+    const headerOpacity = diffClamp.interpolate({
+        inputRange: [0, mScale(60)],
+        outputRange: [1, 0],
+        extrapolate: "clamp",
+    });
+
+    const headerTranslateY = diffClamp.interpolate({
+        inputRange: [0, mScale(60)],
+        outputRange: [0, -mScale(60)],
+        extrapolate: "clamp",
+    });
 
 
     return (
-        <Animated.ScrollView
-            contentContainerStyle={{
-                alignItems: "center",   
-                padding:10
-            }}
-            onScroll={
-                Animated.event(
-                    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                    {useNativeDriver:true}
-                )
-            }
+        <TaskContainer
+            insets={insets}
+            colors={colors}
         >
-            {taskData.map((task, index) => (
-                <TaskCard
-                    key={index}
-                    index={index}
-                    title={task.title}
-                    time={task.time}
-                    icon={task.icon}
-                />
-            ))}
-        </Animated.ScrollView>
+            <TaskHeader
+                style={{
+                    opacity: headerOpacity,
+                    transform: [{ translateY: headerTranslateY }],
+                }}
+            >
+                <TaskText colors={colors}>Today's Task (16)</TaskText>
+            </TaskHeader>
+            <Animated.FlatList
+                data={taskData}
+                contentContainerStyle={{
+                    padding: mScale(20),
+                    gap: vScale(10)
+                }}
+                keyExtractor={item => item.title}
+                renderItem={({ item, index }) => {
+                    const inputRange = [
+                        -1,
+                        0,
+                        mScale(93) * index,
+                        mScale(93) * (index + 2)
+                    ]
+                    const opacityInputRange = [
+                        -1,
+                        0,
+                        mScale(93) * index,
+                        mScale(93) * (index + .5)
+                    ]
+                    const scale = scrollY.interpolate({
+                        inputRange,
+                        outputRange: [1, 1, 1, 0],
+                        extrapolate: "clamp"
+                    })
+                    const opacity = scrollY.interpolate({
+                        inputRange: opacityInputRange,
+                        outputRange: [1, 1, 1, 0],
+                        extrapolate: "clamp"
+                    })
+
+                    scrollY
+
+                    return <TaskCard
+                        key={index}
+                        index={index}
+                        title={item.title}
+                        time={item.time}
+                        icon={item.icon}
+                        style={{
+                            opacity,
+                            transform: [{ scale }]
+                        }}
+                    />
+                }}
+
+                onScroll={
+                    Animated.event(
+                        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                        { useNativeDriver: true }
+                    )
+                }
+                // scrollEventThrottle={16}
+            >
+            </Animated.FlatList>
+        </TaskContainer>
+
     )
 }
 
+const TaskContainer = styled(Animated.View)`
+    flex: 1;
+    padding-top:${({ insets }) => insets.top};
+    background-color:#FAFAFA;
+    
+`
+const TaskHeader = styled(Animated.View)`
+    flex-direction: row;
+    height:${mScale(60)}px;
+    padding-horizontal:${mScale(20)}px;
+    align-items: center;
+`
+
+const TaskText = styled.Text`
+    font-size:${mScale(18)}px;
+    font-weight:600;
+    color:${({ colors }) => colors.textColor};
+`
