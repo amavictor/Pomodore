@@ -14,6 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
 
 
+
 export const TaskScreen = () => {
 
     const scrollY = useRef(new Animated.Value(0)).current
@@ -103,17 +104,17 @@ export const TaskScreen = () => {
         },
     ]
 
-    const diffClamp = Animated.diffClamp(scrollY, 0, mScale(60))
+    // const diffClamp = Animated.diffClamp(scrollY, 0, vScale(60))
 
-    const headerOpacity = diffClamp.interpolate({
-        inputRange: [0, mScale(60)],
+    const headerOpacity = scrollY.interpolate({
+        inputRange: [0, vScale(60)],
         outputRange: [1, 0],
         extrapolate: "clamp",
     });
 
-    const headerTranslateY = diffClamp.interpolate({
-        inputRange: [0, mScale(60)],
-        outputRange: [0, -mScale(60)],
+    const headerTranslateY = scrollY.interpolate({
+        inputRange: [0, vScale(60)],
+        outputRange: [0, -vScale(60)],
         extrapolate: "clamp",
     });
 
@@ -162,8 +163,6 @@ export const TaskScreen = () => {
                         extrapolate: "clamp"
                     })
 
-                    scrollY
-
                     return <TaskCard
                         key={index}
                         index={index}
@@ -183,7 +182,7 @@ export const TaskScreen = () => {
                         { useNativeDriver: true }
                     )
                 }
-                // scrollEventThrottle={16}
+            scrollEventThrottle={16}
             >
             </Animated.FlatList>
         </TaskContainer>
@@ -199,7 +198,7 @@ const TaskContainer = styled(Animated.View)`
 `
 const TaskHeader = styled(Animated.View)`
     flex-direction: row;
-    height:${mScale(60)}px;
+    height:${mScale(30)}px;
     padding-horizontal:${mScale(20)}px;
     align-items: center;
 `

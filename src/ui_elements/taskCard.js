@@ -1,9 +1,11 @@
 import styled from "styled-components/native"
-import { mScale } from '../infrastructure/utilities/utilFunctions';
+import { mScale, vScale } from '../infrastructure/utilities/utilFunctions';
 import { PlayIcon } from "./taskIcons/taskIcons";
-import { useContext, useRef } from 'react';
+import { useContext, useLayoutEffect, useRef } from 'react';
 import { ThemeContext } from '../infrastructure/utilities/themeContext/themeContext';
 import { View, Animated } from "react-native";
+import { useEffect } from 'react';
+import * as Haptics from 'expo-haptics';
 export const TaskCard = ({
     title,
     time,
@@ -12,6 +14,30 @@ export const TaskCard = ({
 }) => {
 
     const { colors } = useContext(ThemeContext)
+
+    const cardRef = useRef(null)
+
+    // useEffect(() => {
+    //     (function feedBack() {
+    //         cardRef.current.measure((x, y, width, height, pageX, pageY) => {
+    //             const scrollThreshold = vScale(60);
+    //             if (scrollThreshold === pageY) {
+    //                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    //             }
+    //         })
+    //     })()
+    // }, [])
+
+    // useLayoutEffect(() => {
+    //     (function feedBack() {
+    //         cardRef.current.measure((x, y, width, height, pageX, pageY) => {
+    //             const scrollThreshold = vScale(60);
+    //             if (scrollThreshold === pageY) {
+    //                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    //             }
+    //         })
+    //     })()
+    // },[])
     return (
         <Container
             style={{
@@ -25,6 +51,7 @@ export const TaskCard = ({
                 shadowRadius: 8,
             }}
             colors={colors}
+            ref={cardRef}
             {...otherProps}
         >
             <ViewContainer>

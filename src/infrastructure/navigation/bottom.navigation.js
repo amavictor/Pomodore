@@ -12,13 +12,15 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { StatisticsNavigation } from './statistic.navigation';
 import { ProfileNavigation } from './profile.navigation';
 import { BlurView } from "expo-blur";
+import * as Haptics from 'expo-haptics';
 
 
 
 const AddComponent = () => {
-    const {colors} = useContext(ThemeContext)
+    const { colors } = useContext(ThemeContext)
     return (
         <TouchableOpacity
+            onPress={()=>Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
             style={{
                 width: mScale(60),
                 height: mScale(60),
@@ -33,10 +35,10 @@ const AddComponent = () => {
                 shadowColor: "#000",
                 shadowOffset: {
                     width: 0,
-                    height:mScale(5)
+                    height: mScale(5)
                 },
                 shadowOpacity: 0.15,
-                shadowRadius:20
+                shadowRadius: 20
 
             }}
         >
@@ -53,7 +55,7 @@ const AddButton = styled.Text`
 export const BottomNavigation = () => {
 
     const Tab = createBottomTabNavigator()
-    const {colors} = useContext(ThemeContext)
+    const { colors } = useContext(ThemeContext)
 
     return (
         <Tab.Navigator
@@ -69,17 +71,17 @@ export const BottomNavigation = () => {
                     }
                     else if (route.name === "Add-task") {
                         iconName = focused ? "add-circle" : "add-circle-outline"
-                        return <AddComponent/>
+                        return <AddComponent />
                     }
-                    else if( route.name === "Statistics") {
+                    else if (route.name === "Statistics") {
                         iconName = focused ? "stats-chart" : "stats-chart-outline"
                         return <Ionicons name={iconName} size={30} color={colors.primary} />
                     }
-                    else if(route.name === "Profile") {
+                    else if (route.name === "Profile") {
                         iconName = focused ? "person" : "person-outline"
                         return <Ionicons name={iconName} size={30} color={colors.primary} />
                     }
- 
+
                 },
                 headerShown: false,
                 tabBarShowLabel: false,
@@ -90,7 +92,7 @@ export const BottomNavigation = () => {
                     right: mScale(25),
                     borderRadius: mScale(15),
                     elevation: 20,
-                    height: vScale(60), 
+                    height: vScale(60),
                     shadowColor: "#000",
                     shadowOffset: {
                         width: 1,
@@ -99,16 +101,16 @@ export const BottomNavigation = () => {
                     shadowOpacity: 0.1,
                     shadowRadius: 20,
                     zIndex: 1,
-                    backgroundColor:`transparent`,
+                    backgroundColor: `transparent`,
 
-                }, 
+                },
                 tabBarBackground: () => (
                     <TabBarBackground>
-                        <BlurView intensity={100} style={StyleSheet.absoluteFill}/>
+                        <BlurView intensity={100} style={StyleSheet.absoluteFill} />
                     </TabBarBackground>
                 ),
                 tabBarIconStyle: {
-                    justifySelf:"center"
+                    justifySelf: "center"
                 }
             })}
         >
