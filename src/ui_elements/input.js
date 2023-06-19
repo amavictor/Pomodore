@@ -9,22 +9,35 @@ export const Input = ({
   IconStart,
   IconEnd,
   password,
-  isDropdown,
   options,
+  date,
+  time,
+  showDatePicker,
+  showTimePicker,
   containerStyle,
+  dateValueFromPicker,
+  timeValueFromPicker,
   ...otherProps
 }) => {
   const { colors } = useContext(ThemeContext);
 
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(true);
-  const [showDropdown, setShowDropdown] = useState(false)
   const handleFocus = () => {
     setIsFocused(true);
+    if(date) {
+      showDatePicker();
+      console.log("Date Picker Active")
+    }
+    else if (time) {
+      showTimePicker();
+      console.log("Time Picker Active")
+    }
   };
   const handleBlur = () => {
     setIsFocused(false);
   };
+
 
   return (
     <InputContainer colors={colors} focused={isFocused}
@@ -35,7 +48,9 @@ export const Input = ({
         onFocus={handleFocus}
         onBlur={handleBlur}
         colors={colors}
-        secureTextEntry={password ? showPassword : false} // Updated secureTextEntry prop
+        showSoftInputOnFocus={(date || time ) ? false : true}
+        value={dateValueFromPicker ? dateValueFromPicker : timeValueFromPicker ? timeValueFromPicker : ''}
+        secureTextEntry={password ? showPassword : false}
         {...otherProps}
       />
       {password && (

@@ -14,11 +14,10 @@ export const AddTaskNavigator = () => {
                 component={AddTaskScreen}
                 options={{
                     headerBackTitleVisible: false,
-                    headerTransparent: true,
+                    headerTransparent: false,
                     headerTitleAlign: "left",
                     headerStyle: {
                         backgroundColor: '#ffff',
-
                     },
                     headerTintColor: colors.textColor,
                     headerTitleStyle: {
