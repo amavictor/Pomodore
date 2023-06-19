@@ -1,8 +1,17 @@
-import { View, Text, KeyboardAvoidingView, Platform } from "react-native"
+import {
+    KeyboardAvoidingView,
+    Platform,
+    Alert,
+    View
+} from "react-native"
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
 import { vScale, mScale } from "../../../infrastructure/utilities/utilFunctions";
-import { useContext, useState } from 'react';
+import {
+    useContext,
+    useState,
+    useLayoutEffect
+} from 'react';
 import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
 import { Input } from "../../../ui_elements/input";
 import { SelectList } from "react-native-dropdown-select-list";
@@ -14,20 +23,29 @@ import * as Haptics from "expo-haptics"
 import { format } from "date-fns";
 import { TaskContext } from "../../../infrastructure/utilities/taskContext/taskContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ActivityIndicator } from '@react-native-material/core';
+import { AudioIcon, CodingIcon, ExerciseIcon, MeditationIcon, ReadingIcon } from "../../../ui_elements/taskIcons/taskIcons";
 
 
 
 
-export const AddTaskScreen = ({navigation}) => {
+
+export const AddTaskScreen = ({ navigation }) => {
     const insets = useSafeAreaInsets()
     const { colors } = useContext(ThemeContext)
     const { tasks, setTasks } = useContext(TaskContext)
+
+
 
     const [pickerMode, setPickerMode] = useState('date')
     const [show, setShow] = useState(false)
 
     const [dateInputValue, setDateInputValue] = useState('')
     const [timeInputValue, setTimeInputValue] = useState('')
+
+    const [taskIcon, setTaskIcon] = useState(null)
+
+    const [isLoading, setIsLoading] = useState(false)
 
 
     const defaultDate = new Date()
@@ -41,9 +59,22 @@ export const AddTaskScreen = ({navigation}) => {
         workingSessions: 1,
         longBreak: 1,
         shortBreak: 1,
+        taskIcon: taskIcon
     })
 
 
+    useLayoutEffect(() => {
+        setTask({
+            title: "",
+            date: defaultDate,
+            startTime: defaultTime,
+            category: "",
+            workingSessions: 1,
+            longBreak: 1,
+            shortBreak: 1,
+            taskIcon: taskIcon
+        })
+    }, [])
     const onChangeDateTime = (e, selectedDate) => {
         if (pickerMode === "date") {
             const currentDate = selectedDate
@@ -97,20 +128,84 @@ export const AddTaskScreen = ({navigation}) => {
         { key: '7', value: 'Exercise' },
     ]
 
-    const submitTask = async () => {
-        setTasks([...tasks, task])
-        await AsyncStorage.setItem("tasks", JSON.stringify(tasks))
-        setTask({
-            title: "",
-            date: defaultDate,
-            startTime: defaultTime,
-            category: "",
-            workingSessions: 0,
-            longBreak: 0,
-            shortBreak: 0,
-        })
-        navigation.push("Home")
+    const selectCategory = (item) => {
+        let selectedTaskIcon;
 
+        switch (item) {
+            case "Meditation":
+                selectedTaskIcon = <MeditationIcon />;
+                break;
+            case "Reading":
+                selectedTaskIcon = <ReadingIcon />;
+                break;
+            case "Coding":
+                selectedTaskIcon = <CodingIcon />;
+                break;
+            case "Music":
+                selectedTaskIcon = <AudioIcon />;
+                break;
+            case "Exercise":
+                selectedTaskIcon = <ExerciseIcon />;
+                break;
+            default:
+                selectedTaskIcon = <MeditationIcon />;
+                break;
+        }
+
+        setTaskIcon(selectedTaskIcon);
+
+        setTask({
+            ...task,
+            category: item,
+            taskIcon: selectedTaskIcon,
+        });
+    };
+
+    const submitTask = async () => {
+        setIsLoading(true)
+        setTasks([...tasks, task])
+        if (
+            (
+                task.title === "" ||
+                task.category === "" ||
+                task.workingSessions === 0 ||
+                task.longBreak === 0 ||
+                task.shortBreak === 0
+            )
+            ||
+            (
+                task.workingSessions < (longBreak || shortBreak) ||
+                task.longBreak < shortBreak
+            )
+
+        ) {
+            Alert.alert("Please fill missing fields")
+            setIsLoading(false)
+        }
+        else {
+            await AsyncStorage.setItem("tasks", JSON.stringify(tasks))
+            setTask({
+                title: "",
+                date: defaultDate,
+                startTime: defaultTime,
+                category: "",
+                workingSessions: 0,
+                longBreak: 0,
+                shortBreak: 0,
+                taskIcon: taskIcon
+            })
+            setIsLoading(false)
+            navigation.navigate("Home")
+        }
+    }
+
+    if (isLoading) {
+        return <View style={{
+            flex: 1,
+            justifyContent: "center",
+        }}>
+            <ActivityIndicator size={"large"} color={colors.primary} />
+        </View>
     }
 
 
@@ -180,14 +275,14 @@ export const AddTaskScreen = ({navigation}) => {
                         </>
 
                     )
-                    
+
                 }
                 <InputContainer style={{ marginTop: vScale(40) }}>
                     <Label
                         colors={colors}
                     >Select Category</Label>
                     <SelectList
-                        setSelected={(val) => setTask({ ...task, category: val })}
+                        setSelected={(val) => selectCategory(val)}
                         data={categoryData}
                         save="value"
                         placeholder="Select task category"
@@ -226,7 +321,7 @@ export const AddTaskScreen = ({navigation}) => {
                         maximumValue={120}
                         minimumValue={0}
                         minimumTrackTintColor={colors.primary}
-                        value={()=>setTask({ ...task, workingSessions: task.workingSessions })}
+                        value={() => setTask({ ...task, workingSessions: task.workingSessions })}
                         onValueChange={(value) => {
                             setTask({ ...task, workingSessions: Math.round(value) })
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
@@ -245,10 +340,12 @@ export const AddTaskScreen = ({navigation}) => {
                         maximumValue={30}
                         minimumValue={0}
                         minimumTrackTintColor={colors.primary}
-                        onSlidingComplete={(value) => {
+                        // value={()=>setTask({ ...task, longBreak: task.long`` })}
+                        onValueChange={(value) => {
                             setTask({ ...task, longBreak: Math.round(value) })
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
                         }}
+                        step={1}
                     />
                 </InputContainer>
 
@@ -262,10 +359,12 @@ export const AddTaskScreen = ({navigation}) => {
                         maximumValue={10}
                         minimumValue={0}
                         minimumTrackTintColor={colors.primary}
-                        onSlidingComplete={(value) => {
+                        // value={()=>setTask({ ...task, shortBreak: task.shortBreak })}
+                        onValueChange={(value) => {
                             setTask({ ...task, shortBreak: Math.round(value) })
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
                         }}
+                        step={1}
                     />
                 </InputContainer>
             </InputContainer>

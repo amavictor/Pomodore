@@ -38,6 +38,7 @@ export const TaskCard = ({
     //         })
     //     })()
     // },[])
+    console.log(icon)
     return (
         <Container
             style={{
@@ -58,7 +59,7 @@ export const TaskCard = ({
                 {icon}
                 <View>
                     <Title colors={colors}>{title}</Title>
-                    <Time>{time}</Time>
+                    <Time>{time} minutes</Time>
                 </View>
             </ViewContainer>
             <PlayIcon />

@@ -2,17 +2,21 @@ import styled from "styled-components/native"
 import { View, Text, Animated, PanResponder, ScrollView } from "react-native"
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Backdrop, BackdropSubheader, Badge } from "@react-native-material/core";
-import { useState, useContext, useRef } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
 import { mScale, vScale } from '../../../infrastructure/utilities/utilFunctions';
 import { Ionicons } from '@expo/vector-icons';
 import CircularProgress from "react-native-circular-progress-indicator";
 import { AudioIcon, CodingIcon, ExerciseIcon, MeditationIcon, ReadingIcon } from "../../../ui_elements/taskIcons/taskIcons";
 import { TaskCard } from "../../../ui_elements/taskCard";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { TaskContext } from "../../../infrastructure/utilities/taskContext/taskContext";
 
 export const HomeScreen = () => {
     const insets = useSafeAreaInsets()
     const { colors } = useContext(ThemeContext)
+    const { tasks } = useContext(TaskContext)
+    const [homeTask ,setHomeTask] = useState(tasks)
     const pan = useRef(new Animated.Value(0)).current
     const [backDropRevealed, setBackdropRevealed] = useState(false)
     const panResponder = useRef(
@@ -36,58 +40,78 @@ export const HomeScreen = () => {
     ).current;
 
 
-    const taskData = [
-        {
-            title: "Sing",
-            time: "57 minutes",
-            icon: <AudioIcon />
-        },
-        {
-            title: "Pray",
-            time: "57 minutes",
-            icon: <MeditationIcon />
-        },
-        {
-            title: "Read",
-            time: "57 minutes",
-            icon: <ReadingIcon />
-        },
-        {
-            title: "Gym",
-            time: "57 minutes",
-            icon: <ExerciseIcon />
-        },
-        {
-            title: "Code",
-            time: "57 minutes",
-            icon: <CodingIcon />
-        },
-        {
-            title: "Sing",
-            time: "57 minutes",
-            icon: <AudioIcon />
-        },
-        {
-            title: "Pray",
-            time: "57 minutes",
-            icon: <MeditationIcon />
-        },
-        {
-            title: "Read",
-            time: "57 minutes",
-            icon: <ReadingIcon />
-        },
-        {
-            title: "Gym",
-            time: "57 minutes",
-            icon: <ExerciseIcon />
-        },
-        {
-            title: "Code",
-            time: "57 minutes",
-            icon: <CodingIcon />
-        },
-    ]
+    // const taskData = [
+    //     {
+    //         title: "Sing",
+    //         time: "57 minutes",
+    //         icon: <AudioIcon />
+    //     },
+    //     {
+    //         title: "Pray",
+    //         time: "57 minutes",
+    //         icon: <MeditationIcon />
+    //     },
+    //     {
+    //         title: "Read",
+    //         time: "57 minutes",
+    //         icon: <ReadingIcon />
+    //     },
+    //     {
+    //         title: "Gym",
+    //         time: "57 minutes",
+    //         icon: <ExerciseIcon />
+    //     },
+    //     {
+    //         title: "Code",
+    //         time: "57 minutes",
+    //         icon: <CodingIcon />
+    //     },
+    //     {
+    //         title: "Sing",
+    //         time: "57 minutes",
+    //         icon: <AudioIcon />
+    //     },
+    //     {
+    //         title: "Pray",
+    //         time: "57 minutes",
+    //         icon: <MeditationIcon />
+    //     },
+    //     {
+    //         title: "Read",
+    //         time: "57 minutes",
+    //         icon: <ReadingIcon />
+    //     },
+    //     {
+    //         title: "Gym",
+    //         time: "57 minutes",
+    //         icon: <ExerciseIcon />
+    //     },
+    //     {
+    //         title: "Code",
+    //         time: "57 minutes",
+    //         icon: <CodingIcon />
+    //     },
+    // ]
+
+    // useEffect(() => {
+    //     (async function getStorageData() {
+    //         try {
+    //             // await AsyncStorage.removeItem("task")
+    //             const allKeys = await AsyncStorage.getAllKeys();
+    //             const keyValuePair = await AsyncStorage.multiGet(allKeys)
+    //             // keyValuePair.forEach((keyValuePair) =>
+    //             console.log(keyValuePair)
+    //         }
+    //         catch (e) {
+    //             console.log('Failed to retrieve AsyncStorage data:', e)
+    //         }
+    //     })()
+    // },[])
+
+    useEffect(() => {
+        setHomeTask(tasks)
+        console.log(tasks)
+    },[tasks])
 
     return (
         <HomeContainer insets={insets}>
@@ -127,26 +151,25 @@ export const HomeScreen = () => {
                     </StatusCard>
 
                     <SeeAllMenu>
-                        <Task colors={colors}>Today Tasks(0)</Task>
+                        <Task colors={colors}>Today Tasks({homeTask.length})</Task>
                         <SeeText colors={colors}>See All</SeeText>
                     </SeeAllMenu>
 
                     <HomeContent
                         showsVerticalScrollIndicator={false}
                     >
-                        {taskData.map((task, index) => (
+                        {homeTask.map((task, index) => (
                             <TaskCard
                                 key={index}
                                 title={task.title}
-                                time={task.time}
-                                icon={task.icon}
+                                time={task.workingSessions}
+                                icon={task.taskIcon}
                             />
                         ))}
                     </HomeContent>
 
                 </HomeContentContainer>
             </Backdrop>
-
         </HomeContainer>
     );
 };
