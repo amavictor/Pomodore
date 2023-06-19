@@ -10,9 +10,18 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { Button } from "../../../ui_elements/buttons";
 import Slider from "@react-native-community/slider";
-export const AddTaskScreen = () => {
+import * as Haptics from "expo-haptics"
+import { format } from "date-fns";
+import { TaskContext } from "../../../infrastructure/utilities/taskContext/taskContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+
+
+
+export const AddTaskScreen = ({navigation}) => {
     const insets = useSafeAreaInsets()
     const { colors } = useContext(ThemeContext)
+    const { tasks, setTasks } = useContext(TaskContext)
 
     const [pickerMode, setPickerMode] = useState('date')
     const [show, setShow] = useState(false)
@@ -29,9 +38,9 @@ export const AddTaskScreen = () => {
         date: defaultDate,
         startTime: defaultTime,
         category: "",
-        workingSessions: "",
-        longBreak: "",
-        shortBreak: ""
+        workingSessions: 1,
+        longBreak: 1,
+        shortBreak: 1,
     })
 
 
@@ -45,9 +54,7 @@ export const AddTaskScreen = () => {
             setTimeInputValue(currentTime)
             setTask({ ...task, startTime: currentTime })
         }
-
         console.log(task)
-
     }
 
     const showMode = (currentMode) => {
@@ -78,7 +85,6 @@ export const AddTaskScreen = () => {
             setTimeInputValue(task.startTime)
             setShow(false)
         }
-
     }
 
     const categoryData = [
@@ -90,6 +96,23 @@ export const AddTaskScreen = () => {
         { key: '6', value: 'Music' },
         { key: '7', value: 'Exercise' },
     ]
+
+    const submitTask = async () => {
+        setTasks([...tasks, task])
+        await AsyncStorage.setItem("tasks", JSON.stringify(tasks))
+        setTask({
+            title: "",
+            date: defaultDate,
+            startTime: defaultTime,
+            category: "",
+            workingSessions: 0,
+            longBreak: 0,
+            shortBreak: 0,
+        })
+        navigation.push("Home")
+
+    }
+
 
     return (
         <AddTaskContainer
@@ -116,12 +139,12 @@ export const AddTaskScreen = () => {
                         >Date</Label>
                         <Input
                             placeholder="Date"
-                            value={task.date}
+                            value={format(task.date, "yyyy-MM-dd")}
                             date={true}
                             showDatePicker={showDatePicker}
                             dateValueFromPicker={dateInputValue}
                             containerStyle={{ width: "70%" }}
-                            onChangeText={(text) => setTask({ ...task, date: text })}
+                            onChangeText={(text) => setTask({ ...task, date: format(text, "yyyy-MM-dd") })}
                         />
                     </InputContainer>
                     <InputContainer>
@@ -131,12 +154,12 @@ export const AddTaskScreen = () => {
                         >Start Time</Label>
                         <Input
                             placeholder="Time"
-                            value={() => new Date()}
+                            value={format(task.startTime, "HH:mm")}
                             time={true}
                             showTimePicker={showTimePicker}
                             timeValueFromPicker={timeInputValue}
                             containerStyle={{ width: "70%" }}
-                            onChangeText={(text) => setTask({ ...task, time: text })}
+                            onChangeText={(text) => setTask({ ...task, time: format(text, "HH:mm") })}
                         />
                     </InputContainer>
                 </DateTimeContainer>
@@ -157,13 +180,14 @@ export const AddTaskScreen = () => {
                         </>
 
                     )
+                    
                 }
                 <InputContainer style={{ marginTop: vScale(40) }}>
                     <Label
                         colors={colors}
                     >Select Category</Label>
                     <SelectList
-                        setSelected={(val) => setSelected({ ...task, category: val })}
+                        setSelected={(val) => setTask({ ...task, category: val })}
                         data={categoryData}
                         save="value"
                         placeholder="Select task category"
@@ -194,40 +218,54 @@ export const AddTaskScreen = () => {
             <InputContainer>
                 <InputContainer>
                     <LabelRow>
-                        <Label colors={colors}>Working Sessions</Label>
-                        <Label colors={colors}>8</Label>
+                        <Label colors={colors}>Working Session (mins)</Label>
+                        <Label colors={colors}>{task.workingSessions}</Label>
                     </LabelRow>
 
                     <Slider
-                        maximumValue={8}
-                        minimumValue={1}
+                        maximumValue={120}
+                        minimumValue={0}
                         minimumTrackTintColor={colors.primary}
+                        value={()=>setTask({ ...task, workingSessions: task.workingSessions })}
+                        onValueChange={(value) => {
+                            setTask({ ...task, workingSessions: Math.round(value) })
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+                        }}
+                        step={5}
                     />
                 </InputContainer>
 
                 <InputContainer>
                     <LabelRow>
                         <Label colors={colors}>Long Break (mins)</Label>
-                        <Label colors={colors}>30</Label>
+                        <Label colors={colors}>{task.longBreak}</Label>
                     </LabelRow>
 
                     <Slider
-                        maximumValue={8}
-                        minimumValue={1}
+                        maximumValue={30}
+                        minimumValue={0}
                         minimumTrackTintColor={colors.primary}
+                        onSlidingComplete={(value) => {
+                            setTask({ ...task, longBreak: Math.round(value) })
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+                        }}
                     />
                 </InputContainer>
 
                 <InputContainer>
                     <LabelRow>
                         <Label colors={colors}>Short Break (mins)</Label>
-                        <Label colors={colors}>10</Label>
+                        <Label colors={colors}>{task.shortBreak}</Label>
                     </LabelRow>
 
                     <Slider
-                        maximumValue={8}
-                        minimumValue={1}
+                        maximumValue={10}
+                        minimumValue={0}
                         minimumTrackTintColor={colors.primary}
+                        onSlidingComplete={(value) => {
+                            setTask({ ...task, shortBreak: Math.round(value) })
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+                        }}
                     />
                 </InputContainer>
             </InputContainer>
@@ -235,6 +273,7 @@ export const AddTaskScreen = () => {
                 style={{
                     marginTop: vScale(40),
                 }}
+                onPress={() => submitTask()}
             >Create new task</Button>
 
             <Empty>

@@ -5,18 +5,21 @@ import { Navigation } from './src/infrastructure/navigation/navigation';
 import { ThemeContextProvider } from './src/infrastructure/utilities/themeContext/themeContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthContextProvider, MemoizedAuthProvider } from './src/infrastructure/authContext/authContext';
+import { TaskContextProvider } from './src/infrastructure/utilities/taskContext/taskContext';
 
 export default function App() {
   return (
     <AuthContextProvider>
-      <SafeAreaProvider>
-        <ThemeContextProvider>
-          <NavigationContainer>
-            <Navigation />
-            <StatusBar style="auto" />
-          </NavigationContainer>
-        </ThemeContextProvider>
-      </SafeAreaProvider>
+      <TaskContextProvider>
+        <SafeAreaProvider>
+          <ThemeContextProvider>
+            <NavigationContainer>
+              <Navigation />
+              <StatusBar style="auto" />
+            </NavigationContainer>
+          </ThemeContextProvider>
+        </SafeAreaProvider>
+      </TaskContextProvider>
     </AuthContextProvider>
 
   );
