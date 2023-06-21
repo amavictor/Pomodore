@@ -3,55 +3,66 @@ import { mScale, vScale } from '../infrastructure/utilities/utilFunctions';
 import { PlayIcon } from "./taskIcons/taskIcons";
 import { useContext, useLayoutEffect, useRef } from 'react';
 import { ThemeContext } from '../infrastructure/utilities/themeContext/themeContext';
-import { View, Animated, PanResponder, Image } from "react-native";
+import { View, Animated, PanResponder, Image, UIManager } from "react-native";
 import { useEffect } from 'react';
 import * as Haptics from 'expo-haptics';
-import { useNavigation } from '@react-navigation/native';
 
-export const TaskCard = ({ title, time, icon, ...otherProps }) => {
+
+
+if (Platform.OS === "android") {
+    if (UIManager.setLayoutAnimationEnabledExperimental) {
+        UIManager.setLayoutAnimationEnabledExperimental(true)
+    }
+}
+export const TaskCard = ({
+    title,
+    time,
+    icon,
+    deleteTask,
+    ...otherProps }) => {
     const { colors } = useContext(ThemeContext);
     const pan = useRef(new Animated.Value(0)).current;
     const deleteIconScale = useRef(new Animated.Value(1)).current;
-    const deleteThreshold = -60; // Adjust this value to set the swipe threshold for deletion
+    const deleteThreshold = -110;
 
     const panResponder = useRef(
         PanResponder.create({
-            onStartShouldSetPanResponder:()=>true,
-            // onMoveShouldSetPanResponder: (_, gestureState) => {
-            //     return (
-            //         (Math.abs(gestureState.dx) > Math.abs(gestureState.dy * 3) && gestureState.dx < -10) ||
-            //         (Math.abs(gestureState.dx) > Math.abs(gestureState.dy * 3) && gestureState.dx > -1000)
-            //     );
-            // },
+            // onStartShouldSetPanResponder: () => true,
+            onMoveShouldSetPanResponder: (_, gestureState) => {
+                return (
+                    (Math.abs(gestureState.dx) > Math.abs(gestureState.dy * 3) && gestureState.dx < -10) ||
+                    (Math.abs(gestureState.dx) > Math.abs(gestureState.dy * 3) && gestureState.dx > -1000)
+                );
+            },
             onPanResponderMove: (_, gestureState) => {
                 if (gestureState.dx < -10 || gestureState.dx > -150) {
                     pan.setValue(gestureState.dx);
                 }
+                const scale = Math.max(-(gestureState.dx) / 100, 0.5); 
+                Animated.spring(deleteIconScale, {
+                    toValue: scale,
+                    useNativeDriver: true,
+                    duration: 0,
+                }).start();
+
                 if (gestureState.dx < deleteThreshold) {
-                    const scale = 1  (gestureState.dx - deleteThreshold) / 10; // Adjust scale speed with 40
-                    Animated.spring(deleteIconScale, {
-                        toValue: scale,
-                        useNativeDriver: true,
-                        duration: 0
-                    }).start();
-                }
-                if (gestureState.dx > deleteThreshold) {
-                    Animated.spring(deleteIconScale, {
-                        toValue: 1,
-                        useNativeDriver: true,
-                        duration: 0
-                    }).start();
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
                 }
             },
             onPanResponderRelease: (_, gestureState) => {
                 if (gestureState.dx < deleteThreshold) {
-                    // Perform delete action
+                    deleteTask()
                 } else {
                     Animated.spring(pan, {
                         toValue: 0,
-                        useNativeDriver: true
+                        useNativeDriver: true,
                     }).start();
                 }
+                Animated.spring(deleteIconScale, {
+                    toValue: 1,
+                    useNativeDriver: true,
+                    duration: 150,
+                }).start();
             },
         })
     ).current;

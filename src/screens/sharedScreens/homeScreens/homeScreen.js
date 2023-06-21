@@ -39,6 +39,7 @@ export const HomeScreen = () => {
         })
     ).current;
 
+    
 
 
     useEffect(() => {
@@ -237,10 +238,12 @@ const HomeContent = styled(ScrollView).attrs({
         justifyContent: "center",
         gap: 30,
         width: "100%",
-        alignItems: "center"
+        alignItems: "center",
+        paddingBottom:vScale(50)
+
     }
 })`
-
+    height:${mScale(30)}px;
 `
 const SeeAllMenu = styled.View`
     flex-direction:row;

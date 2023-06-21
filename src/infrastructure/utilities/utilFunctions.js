@@ -20,3 +20,7 @@ export const setTimeOfDay = () => {
     }
 
 }
+
+export const removeTask = () => {
+    
+}
