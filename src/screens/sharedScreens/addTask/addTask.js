@@ -85,7 +85,6 @@ export const AddTaskScreen = ({ navigation }) => {
             setTimeInputValue(currentTime)
             setTask({ ...task, startTime: currentTime })
         }
-        console.log(task)
     }
 
     const showMode = (currentMode) => {
@@ -170,12 +169,9 @@ export const AddTaskScreen = ({ navigation }) => {
                 task.category === "" ||
                 task.workingSessions === 0 ||
                 task.longBreak === 0 ||
-                task.shortBreak === 0
-            )
-            ||
-            (
-                task.workingSessions < (longBreak || shortBreak) ||
-                task.longBreak < shortBreak
+                task.shortBreak === 0 ||
+                task.workingSessions < Math.min(task.longBreak, task.shortBreak) ||
+                task.longBreak < task.shortBreak
             )
 
         ) {
@@ -370,7 +366,7 @@ export const AddTaskScreen = ({ navigation }) => {
             </InputContainer>
             <Button
                 style={{
-                    marginTop: vScale(40),
+                    marginTop: vScale(20),
                 }}
                 onPress={() => submitTask()}
             >Create new task</Button>

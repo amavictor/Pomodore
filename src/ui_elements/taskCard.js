@@ -3,93 +3,128 @@ import { mScale, vScale } from '../infrastructure/utilities/utilFunctions';
 import { PlayIcon } from "./taskIcons/taskIcons";
 import { useContext, useLayoutEffect, useRef } from 'react';
 import { ThemeContext } from '../infrastructure/utilities/themeContext/themeContext';
-import { View, Animated } from "react-native";
+import { View, Animated, PanResponder, Image } from "react-native";
 import { useEffect } from 'react';
 import * as Haptics from 'expo-haptics';
-export const TaskCard = ({
-    title,
-    time,
-    icon,
-    ...otherProps
-}) => {
+import { useNavigation } from '@react-navigation/native';
 
-    const { colors } = useContext(ThemeContext)
+export const TaskCard = ({ title, time, icon, ...otherProps }) => {
+    const { colors } = useContext(ThemeContext);
+    const pan = useRef(new Animated.Value(0)).current;
+    const deleteIconScale = useRef(new Animated.Value(1)).current;
+    const deleteThreshold = -60; // Adjust this value to set the swipe threshold for deletion
 
-    const cardRef = useRef(null)
+    const panResponder = useRef(
+        PanResponder.create({
+            onStartShouldSetPanResponder:()=>true,
+            // onMoveShouldSetPanResponder: (_, gestureState) => {
+            //     return (
+            //         (Math.abs(gestureState.dx) > Math.abs(gestureState.dy * 3) && gestureState.dx < -10) ||
+            //         (Math.abs(gestureState.dx) > Math.abs(gestureState.dy * 3) && gestureState.dx > -1000)
+            //     );
+            // },
+            onPanResponderMove: (_, gestureState) => {
+                if (gestureState.dx < -10 || gestureState.dx > -150) {
+                    pan.setValue(gestureState.dx);
+                }
+                if (gestureState.dx < deleteThreshold) {
+                    const scale = 1  (gestureState.dx - deleteThreshold) / 10; // Adjust scale speed with 40
+                    Animated.spring(deleteIconScale, {
+                        toValue: scale,
+                        useNativeDriver: true,
+                        duration: 0
+                    }).start();
+                }
+                if (gestureState.dx > deleteThreshold) {
+                    Animated.spring(deleteIconScale, {
+                        toValue: 1,
+                        useNativeDriver: true,
+                        duration: 0
+                    }).start();
+                }
+            },
+            onPanResponderRelease: (_, gestureState) => {
+                if (gestureState.dx < deleteThreshold) {
+                    // Perform delete action
+                } else {
+                    Animated.spring(pan, {
+                        toValue: 0,
+                        useNativeDriver: true
+                    }).start();
+                }
+            },
+        })
+    ).current;
 
-    // useEffect(() => {
-    //     (function feedBack() {
-    //         cardRef.current.measure((x, y, width, height, pageX, pageY) => {
-    //             const scrollThreshold = vScale(60);
-    //             if (scrollThreshold === pageY) {
-    //                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    //             }
-    //         })
-    //     })()
-    // }, [])
-
-    // useLayoutEffect(() => {
-    //     (function feedBack() {
-    //         cardRef.current.measure((x, y, width, height, pageX, pageY) => {
-    //             const scrollThreshold = vScale(60);
-    //             if (scrollThreshold === pageY) {
-    //                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    //             }
-    //         })
-    //     })()
-    // },[])
-    console.log(icon)
     return (
-        <Container
-            style={{
-                elevation: 20,
-                shadowColor: "#000",
-                shadowOffset: {
-                    width: 1,
-                    height: mScale(5),
-                },
-                shadowOpacity: 0.05,
-                shadowRadius: 8,
-            }}
+        <Body
             colors={colors}
-            ref={cardRef}
             {...otherProps}
         >
-            <ViewContainer>
-                {icon}
-                <View>
-                    <Title colors={colors}>{title}</Title>
-                    <Time>{time} minutes</Time>
-                </View>
-            </ViewContainer>
-            <PlayIcon />
-        </Container>
-    )
-}
-
+            <Container
+                style={{
+                    transform: [{ translateX: pan }],
+                }}
+                colors={colors}
+                {...panResponder.panHandlers}
+            >
+                <ViewContainer>
+                    {icon}
+                    <View>
+                        <Title colors={colors}>{title}</Title>
+                        <Time>{time} minutes</Time>
+                    </View>
+                </ViewContainer>
+                <PlayIcon />
+            </Container>
+            <Animated.Image
+                source={require("../../assets/icons/delete.png")}
+                style={{
+                    width: mScale(20),
+                    height: mScale(20),
+                    position: "absolute",
+                    top: "40%",
+                    right: mScale(20),
+                    zIndex: -1,
+                    transform: [{ scale: deleteIconScale }],
+                }}
+            />
+        </Body>
+    );
+};
 const Container = styled(Animated.View)`
     width: 100%;
-    height:${mScale(80)}px;
+    height: ${mScale(80)}px;
     padding: ${mScale(10)}px;
-    flex-direction:row;
-    justify-content:space-between;
-    align-items:center;
-    background-color:${({ colors }) => colors.backgroundColor};
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: ${({ colors }) => colors.backgroundColor};
     border-radius: ${mScale(14)}px;
-`
+  `;
+
 const Title = styled.Text`
-    font-size:${mScale(18)}px;
-    font-weight:600;
-    margin-bottom:${mScale(5)}px; ;
-    color:${({ colors }) => colors.textColor};
-`
+    font-size: ${mScale(18)}px;
+    font-weight: 600;
+    margin-bottom: ${mScale(5)}px;
+    color: ${({ colors }) => colors.textColor};
+  `;
+
 const Time = styled.Text`
-    font-size:${mScale(12)}px;
-    font-weight:400;
-    color:gray;
-`
+    font-size: ${mScale(12)}px;
+    font-weight: 400;
+    color: gray;
+  `;
+
 const ViewContainer = styled.View`
-    flex-direction:row;
-    align-items:center;
-    gap:${mScale(30)}px;
-`
+    flex-direction: row;
+    align-items: center;
+    gap: ${mScale(30)}px;
+  `;
+
+const Body = styled.View`
+    width: 100%;
+    position: relative;
+    background-color: ${({ colors }) => colors.alternatePrimary};
+    border-radius: ${mScale(14)}px;
+  `;

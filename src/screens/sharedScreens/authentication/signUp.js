@@ -90,7 +90,6 @@ export const SignUp = () => {
         const provider = new GoogleAuthProvider();
         try {
             const response = await signInWithPopup(auth, provider)
-            console.log(response.user)
         } catch (e) {
             Alert.alert(e.message);
         }

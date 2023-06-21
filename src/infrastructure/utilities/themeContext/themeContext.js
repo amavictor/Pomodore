@@ -5,7 +5,7 @@ export const ThemeContext = createContext()
 
 export const ThemeContextProvider = ({children}) => {
     const [theme, setTheme] = useState("")
-    const colorScheme = useColorScheme()
+    const colorScheme = Appearance.getColorScheme()
 
     const getColors = (currentTheme) => {
         if (currentTheme === "dark") {

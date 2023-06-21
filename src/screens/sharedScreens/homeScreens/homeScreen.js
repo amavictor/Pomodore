@@ -1,24 +1,24 @@
 import styled from "styled-components/native"
-import { View, Text, Animated, PanResponder, ScrollView } from "react-native"
+import { View, Text, Animated, PanResponder, ScrollView, Button } from "react-native"
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Backdrop, BackdropSubheader, Badge } from "@react-native-material/core";
-import { useState, useContext, useRef, useEffect } from "react";
+import { useState, useContext, useRef, useEffect, useLayoutEffect } from "react";
 import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
-import { mScale, vScale } from '../../../infrastructure/utilities/utilFunctions';
+import { mScale, setTimeOfDay, vScale } from '../../../infrastructure/utilities/utilFunctions';
 import { Ionicons } from '@expo/vector-icons';
 import CircularProgress from "react-native-circular-progress-indicator";
-import { AudioIcon, CodingIcon, ExerciseIcon, MeditationIcon, ReadingIcon } from "../../../ui_elements/taskIcons/taskIcons";
 import { TaskCard } from "../../../ui_elements/taskCard";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TaskContext } from "../../../infrastructure/utilities/taskContext/taskContext";
 
 export const HomeScreen = () => {
     const insets = useSafeAreaInsets()
     const { colors } = useContext(ThemeContext)
     const { tasks } = useContext(TaskContext)
-    const [homeTask ,setHomeTask] = useState(tasks)
+    const [homeTask, setHomeTask] = useState([])
     const pan = useRef(new Animated.Value(0)).current
     const [backDropRevealed, setBackdropRevealed] = useState(false)
+
+
     const panResponder = useRef(
         PanResponder.create({
             onStartShouldSetPanResponder: () => true,
@@ -40,79 +40,19 @@ export const HomeScreen = () => {
     ).current;
 
 
-    // const taskData = [
-    //     {
-    //         title: "Sing",
-    //         time: "57 minutes",
-    //         icon: <AudioIcon />
-    //     },
-    //     {
-    //         title: "Pray",
-    //         time: "57 minutes",
-    //         icon: <MeditationIcon />
-    //     },
-    //     {
-    //         title: "Read",
-    //         time: "57 minutes",
-    //         icon: <ReadingIcon />
-    //     },
-    //     {
-    //         title: "Gym",
-    //         time: "57 minutes",
-    //         icon: <ExerciseIcon />
-    //     },
-    //     {
-    //         title: "Code",
-    //         time: "57 minutes",
-    //         icon: <CodingIcon />
-    //     },
-    //     {
-    //         title: "Sing",
-    //         time: "57 minutes",
-    //         icon: <AudioIcon />
-    //     },
-    //     {
-    //         title: "Pray",
-    //         time: "57 minutes",
-    //         icon: <MeditationIcon />
-    //     },
-    //     {
-    //         title: "Read",
-    //         time: "57 minutes",
-    //         icon: <ReadingIcon />
-    //     },
-    //     {
-    //         title: "Gym",
-    //         time: "57 minutes",
-    //         icon: <ExerciseIcon />
-    //     },
-    //     {
-    //         title: "Code",
-    //         time: "57 minutes",
-    //         icon: <CodingIcon />
-    //     },
-    // ]
-
-    // useEffect(() => {
-    //     (async function getStorageData() {
-    //         try {
-    //             // await AsyncStorage.removeItem("task")
-    //             const allKeys = await AsyncStorage.getAllKeys();
-    //             const keyValuePair = await AsyncStorage.multiGet(allKeys)
-    //             // keyValuePair.forEach((keyValuePair) =>
-    //             console.log(keyValuePair)
-    //         }
-    //         catch (e) {
-    //             console.log('Failed to retrieve AsyncStorage data:', e)
-    //         }
-    //     })()
-    // },[])
 
     useEffect(() => {
-        setHomeTask(tasks)
-        console.log(tasks)
-    },[tasks])
-
+        const currentDate = new Date();
+        const currentTask = tasks.filter((item) => {
+            const itemDate = new Date(item.date);
+            return (
+                itemDate.getFullYear() === currentDate.getFullYear() &&
+                itemDate.getMonth() === currentDate.getMonth() &&
+                itemDate.getDate() === currentDate.getDate()
+            );
+        });
+        setHomeTask(currentTask)
+    }, [tasks]);
     return (
         <HomeContainer insets={insets}>
             <Backdrop
@@ -145,20 +85,20 @@ export const HomeScreen = () => {
                             />
                         </CircularProgressContainer>
                         <TextView>
-                            <StatusText colors={colors}>Wow you're almost there, don't give up!</StatusText>
-                            <CompletedText colors={colors}>12 0f 12 completed</CompletedText>
+                            <StatusText colors={colors}>Today is a great day to Achieve results</StatusText>
+                            <CompletedText colors={colors}>0 0f {homeTask?.length} completed</CompletedText>
                         </TextView>
                     </StatusCard>
 
                     <SeeAllMenu>
-                        <Task colors={colors}>Today Tasks({homeTask.length})</Task>
-                        <SeeText colors={colors}>See All</SeeText>
+                        <Task colors={colors}>Today Tasks({homeTask?.length})</Task>
+                        <Button color={`${colors.primary}`} title="See all" />
                     </SeeAllMenu>
 
                     <HomeContent
                         showsVerticalScrollIndicator={false}
                     >
-                        {homeTask.map((task, index) => (
+                        {homeTask?.map((task, index) => (
                             <TaskCard
                                 key={index}
                                 title={task.title}
@@ -177,9 +117,10 @@ export const HomeScreen = () => {
 
 const BackdropHeaderComponent = () => {
     const insets = useSafeAreaInsets()
+    const timeOfDay = setTimeOfDay() 
     return (
         <BackdropHeaderContainer insets={insets}>
-            <MorningText>Morning Victor!</MorningText>
+            <MorningText>{timeOfDay} Victor!</MorningText>
             <NotificationContainer>
                 <Badge
                     label={0}
@@ -221,7 +162,7 @@ const BackdropHeaderContainer = styled.View`
 `
 const MorningText = styled.Text`
     color:"green" ;
-    font-size:${mScale(30)}px;
+    font-size:${mScale(24)}px;
     color:#ffff;
     font-weight:600;
 `
@@ -279,6 +220,7 @@ const StatusText = styled.Text`
     font-weight:700;
     font-size:${mScale(18)}px;
     color:${({ colors }) => colors.textColor};
+    width:80%;
 `
 const CompletedText = styled.Text`
     font-size:${mScale(12)}px;
@@ -295,7 +237,7 @@ const HomeContent = styled(ScrollView).attrs({
         justifyContent: "center",
         gap: 30,
         width: "100%",
-        alignItems:"center"
+        alignItems: "center"
     }
 })`
 

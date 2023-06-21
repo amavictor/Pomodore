@@ -16,7 +16,7 @@ export const TaskContextProvider = ({ children }) => {
                 setTasks(JSON.parse(tasks))
             }
         })
-    },[])
+    },[tasks])
 
     return (
         <TaskContext.Provider value={{

@@ -27,11 +27,9 @@ export const Input = ({
     setIsFocused(true);
     if(date) {
       showDatePicker();
-      console.log("Date Picker Active")
     }
     else if (time) {
       showTimePicker();
-      console.log("Time Picker Active")
     }
   };
   const handleBlur = () => {
