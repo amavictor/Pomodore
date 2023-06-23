@@ -14,7 +14,7 @@ export const TaskScreen = () => {
     const scrollY = useRef(new Animated.Value(0)).current
     const insets = useSafeAreaInsets()
     const { colors } = useContext(ThemeContext)
-    const { tasks } = useContext(TaskContext)
+    const { tasks,setTasks } = useContext(TaskContext)
 
     // const diffClamp = Animated.diffClamp(scrollY, 0, vScale(60))
 
@@ -29,6 +29,7 @@ export const TaskScreen = () => {
         outputRange: [0, -vScale(60)],
         extrapolate: "clamp",
     });
+
 
 
     return (
@@ -92,17 +93,27 @@ export const TaskScreen = () => {
                                 extrapolate: "clamp"
                             })
 
-                            return <TaskCard
-                                key={index}
-                                index={index}
-                                title={item.title}
-                                time={item.time}
-                                icon={item.taskIcon}
+                            deleteTask = (tasks, item) => {
+                                const updatedTasks = tasks?.filter((activity) => activity.title !== item.title);
+                                console.log(updatedTasks, "Popo")
+                                setTasks(updatedTasks);
+                            };
+
+                            return <Animated.View
                                 style={{
                                     opacity,
-                                    transform: [{ scale }]
+                                    transform: [{ scaleX: scale }, { scaleY: scale }],
                                 }}
-                            />
+                            >
+                                <TaskCard
+                                    key={index}
+                                    index={index}
+                                    title={item.title}
+                                    time={item.time}
+                                    icon={item.taskIcon}
+                                    deleteTask={() => deleteTask(tasks, item)}
+                                />
+                            </Animated.View>
                         }}
 
                         onScroll={

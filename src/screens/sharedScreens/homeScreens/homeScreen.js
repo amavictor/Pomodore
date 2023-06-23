@@ -1,19 +1,22 @@
 import styled from "styled-components/native"
-import { View, Text, Animated, PanResponder, ScrollView, Button } from "react-native"
+import { View, Text, PanResponder, ScrollView, Button, Animated, TouchableOpacity, Pressable } from "react-native"
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Backdrop, BackdropSubheader, Badge } from "@react-native-material/core";
 import { useState, useContext, useRef, useEffect, useLayoutEffect } from "react";
 import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
-import { mScale, setTimeOfDay, vScale } from '../../../infrastructure/utilities/utilFunctions';
+import { mScale, removeTask, setTimeOfDay, vScale } from '../../../infrastructure/utilities/utilFunctions';
 import { Ionicons } from '@expo/vector-icons';
 import CircularProgress from "react-native-circular-progress-indicator";
 import { TaskCard } from "../../../ui_elements/taskCard";
 import { TaskContext } from "../../../infrastructure/utilities/taskContext/taskContext";
+import { SharedElement } from "react-native-shared-element";
 
-export const HomeScreen = () => {
+
+
+export const HomeScreen = ({ navigation }) => {
     const insets = useSafeAreaInsets()
     const { colors } = useContext(ThemeContext)
-    const { tasks } = useContext(TaskContext)
+    const { tasks, setTasks } = useContext(TaskContext)
     const [homeTask, setHomeTask] = useState([])
     const pan = useRef(new Animated.Value(0)).current
     const [backDropRevealed, setBackdropRevealed] = useState(false)
@@ -39,8 +42,10 @@ export const HomeScreen = () => {
         })
     ).current;
 
-    
-
+    const deleteTask = (tasks, item) => {
+        const updatedTasks = tasks?.filter((activity) => activity.title !== item.title);
+        setTasks(updatedTasks);
+    };
 
     useEffect(() => {
         const currentDate = new Date();
@@ -54,6 +59,9 @@ export const HomeScreen = () => {
         });
         setHomeTask(currentTask)
     }, [tasks]);
+
+
+
     return (
         <HomeContainer insets={insets}>
             <Backdrop
@@ -93,19 +101,29 @@ export const HomeScreen = () => {
 
                     <SeeAllMenu>
                         <Task colors={colors}>Today Tasks({homeTask?.length})</Task>
-                        <Button color={`${colors.primary}`} title="See all" />
+                        <Button color={`${colors.primary}`} title="See all" onPress={() => navigation.navigate("Task")} />
                     </SeeAllMenu>
 
                     <HomeContent
                         showsVerticalScrollIndicator={false}
                     >
-                        {homeTask?.map((task, index) => (
-                            <TaskCard
-                                key={index}
-                                title={task.title}
-                                time={task.workingSessions}
-                                icon={task.taskIcon}
-                            />
+                        {homeTask?.map((item, index) => (
+                            <Pressable
+                                style={{
+                                    width: "100%"
+                                }}
+                                onPress={() => { navigation.navigate("Timer", { item }) }}>
+                                <Animated id={`task.${item.title}.id`}>
+                                    <TaskCard
+                                        key={index}
+                                        title={item.title}
+                                        time={item.workingSessions}
+                                        icon={item.taskIcon}
+                                        deleteTask={() => deleteTask(tasks, item)}
+                                    />
+                                </Animated>
+                            </Pressable>
+
                         ))}
                     </HomeContent>
 
@@ -118,10 +136,10 @@ export const HomeScreen = () => {
 
 const BackdropHeaderComponent = () => {
     const insets = useSafeAreaInsets()
-    const timeOfDay = setTimeOfDay() 
+    const timeOfDay = setTimeOfDay()
     return (
         <BackdropHeaderContainer insets={insets}>
-            <MorningText>{timeOfDay} Victor!</MorningText>
+            <MorningText>{timeOfDay}, Victor!</MorningText>
             <NotificationContainer>
                 <Badge
                     label={0}
@@ -239,7 +257,7 @@ const HomeContent = styled(ScrollView).attrs({
         gap: 30,
         width: "100%",
         alignItems: "center",
-        paddingBottom:vScale(50)
+        paddingBottom: vScale(50)
 
     }
 })`

@@ -21,6 +21,6 @@ export const setTimeOfDay = () => {
 
 }
 
-export const removeTask = () => {
-    
+export const removeTask = (task, item) => {
+    task.filter((activity)=> activity.title !== item.item)
 }

@@ -3,9 +3,10 @@ import { mScale, vScale } from '../infrastructure/utilities/utilFunctions';
 import { PlayIcon } from "./taskIcons/taskIcons";
 import { useContext, useLayoutEffect, useRef } from 'react';
 import { ThemeContext } from '../infrastructure/utilities/themeContext/themeContext';
-import { View, Animated, PanResponder, Image, UIManager } from "react-native";
+import { View, Animated, PanResponder, Image, UIManager, LayoutAnimation } from "react-native";
 import { useEffect } from 'react';
 import * as Haptics from 'expo-haptics';
+import { useNavigation } from '@react-navigation/native';
 
 
 
@@ -38,7 +39,7 @@ export const TaskCard = ({
                 if (gestureState.dx < -10 || gestureState.dx > -150) {
                     pan.setValue(gestureState.dx);
                 }
-                const scale = Math.max(-(gestureState.dx) / 100, 0.5); 
+                const scale = Math.max(-(gestureState.dx) / 100, 0.5);
                 Animated.spring(deleteIconScale, {
                     toValue: scale,
                     useNativeDriver: true,
@@ -51,6 +52,7 @@ export const TaskCard = ({
             },
             onPanResponderRelease: (_, gestureState) => {
                 if (gestureState.dx < deleteThreshold) {
+                    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
                     deleteTask()
                 } else {
                     Animated.spring(pan, {
@@ -74,6 +76,14 @@ export const TaskCard = ({
         >
             <Container
                 style={{
+                    elevation: 20,
+                    shadowColor: "#000",
+                    shadowOffset: {
+                        width: 2,
+                        height: mScale(2)
+                    },
+                    shadowOpacity: 0.05,
+                    shadowRadius: 10,
                     transform: [{ translateX: pan }],
                 }}
                 colors={colors}
