@@ -113,15 +113,14 @@ export const HomeScreen = ({ navigation }) => {
                                     width: "100%"
                                 }}
                                 onPress={() => { navigation.navigate("Timer", { item }) }}>
-                                <Animated id={`task.${item.title}.id`}>
-                                    <TaskCard
-                                        key={index}
-                                        title={item.title}
-                                        time={item.workingSessions}
-                                        icon={item.taskIcon}
-                                        deleteTask={() => deleteTask(tasks, item)}
-                                    />
-                                </Animated>
+                                <TaskCard
+                                    key={index}
+                                    title={item.title}
+                                    time={item.workingSessions}
+                                    icon={item.taskIcon}
+                                    deleteTask={() => deleteTask(tasks, item)}
+                                />
+
                             </Pressable>
 
                         ))}

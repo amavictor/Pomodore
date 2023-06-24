@@ -69,7 +69,7 @@ export const AddTaskScreen = ({ navigation }) => {
             date: defaultDate,
             startTime: defaultTime,
             category: "",
-            workingSessions: 1,
+            workingSessions: 30,
             longBreak: 1,
             shortBreak: 1,
             taskIcon: taskIcon
