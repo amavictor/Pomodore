@@ -6,6 +6,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import styled from "styled-components/native"; 
 import { mScale } from "../../infrastructure/utilities/utilFunctions";
+import { useContext } from 'react';
+import { ThemeContext } from '../../infrastructure/utilities/themeContext/themeContext';
 
 
 export const ReadingIcon = () => {
@@ -57,9 +59,10 @@ export const LaptopIcon = () => {
 }
 
 export const PlayIcon = () => {
+    const {colors} = useContext(ThemeContext)
     return (
         <PlayIconBackground>
-            <FontAwesome name="play-circle" size={20} color="white" />
+            <FontAwesome name="play-circle" size={20} color={colors.backgroundColor} />
         </PlayIconBackground>
     )
 }
