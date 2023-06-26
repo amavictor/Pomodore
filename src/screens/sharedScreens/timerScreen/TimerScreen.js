@@ -20,16 +20,21 @@ export const TimerScreen = ({ route, navigation, params }) => {
     const { colors } = useContext(ThemeContext);
     const { item } = route.params;
     const insets = useSafeAreaInsets();
-    const [showBottomNav, setShowBottomNav] = useState(true);
     const [remainingTime, setRemainingTime] = useState(item?.workingSessions * 60);
+    const [longBreak, setLongBreak] = useState(item?.longBreak * 60)
+    const [shortBreak, setShortBreak] = useState(item?.shortBreak * 60)
+    const [breakActive, setBreakActive] = useState(false)
+    const [breakType, setBreakType] = useState("")
     const [play, setPlay] = useState(false);
     const timerProgressRef = useRef(null);
     const [maxValue, setMaxValue] = useState(item?.workingSessions * 60);
+    const [longBreakComplete, setLongBreakComplete] = useState(false)
+    const [shortBreakComplete, setShortBreakComplete] = useState(false)
 
     useEffect(() => {
         let intervalId;
 
-        if (play) {
+        if (play && remainingTime > 0) {
             intervalId = setInterval(() => {
                 setRemainingTime(prevRemainingTime => prevRemainingTime - 1);
             }, 1000);
@@ -43,8 +48,66 @@ export const TimerScreen = ({ route, navigation, params }) => {
     useEffect(() => {
         if (remainingTime === 0) {
             setPlay(false);
+            return
         }
     }, [remainingTime]);
+
+    useEffect(() => {
+        let intervalId;
+        if (play === false && breakActive) {
+            if (longBreak > 0) {
+                intervalId = setInterval(() => {
+                    setLongBreak(prevLongBreak => prevLongBreak - 1);
+                }, 1000)
+            } else if (longBreak < 0) {
+                clearInterval(intervalId);
+            }
+        }
+
+
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [longBreak, breakActive, play])
+
+    useEffect(() => {
+        let intervalId;
+        if (play === false && breakActive) {
+            if (shortBreak > 0) {
+                intervalId = setInterval(() => {
+                    setShortBreak(prevLongBreak => prevLongBreak - 1);
+                }, 1000)
+            } else if (shortBreak < 0) {
+                clearInterval(intervalId);
+            }
+        }
+
+
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [shortBreak, breakActive, play])
+
+    useEffect(() => {
+        if (longBreak === 0) {
+            setPlay(true);
+            setLongBreak(0)
+            setBreakActive(false)
+            setLongBreakComplete(true)
+            return
+        }
+    }, [longBreak]);
+
+    useEffect(() => {
+        if (shortBreak === 0) {
+            setPlay(true);
+            setLongBreak(0)
+            setBreakActive(false)
+            setLongBreakComplete(true)
+            return
+        }
+    }, [shortBreak]);
+
 
     const formatTime = (time) => {
         const minutes = Math.floor(time / 60).toString().padStart(2, '0');
@@ -52,17 +115,24 @@ export const TimerScreen = ({ route, navigation, params }) => {
         return `${minutes}:${seconds}`;
     };
 
-    useEffect(() => {
-        navigation.setOptions({
-            tabBarVisible: showBottomNav
-        });
-    }, [showBottomNav]);
 
-    const hideBottomNav = () => {
-        setShowBottomNav(!showBottomNav);
+    const startLongBreak = () => {
+        setPlay(false);
+        setBreakType("Long")
+        setBreakActive(true)
     };
 
+    const startShortBreak = () => {
+        setPlay(false);
+        setBreakType("Long")
+        setBreakActive(true)
+    };
+
+
     const start = () => {
+        if (remainingTime === 0) {
+            return
+        }
         setPlay(prevPlay => !prevPlay);
         if (!play) {
             timerProgressRef.current.play();
@@ -73,16 +143,19 @@ export const TimerScreen = ({ route, navigation, params }) => {
 
     const restart = () => {
         setRemainingTime(item?.workingSessions * 60)
+        setMaxValue(item?.workingSessions * 60)
         timerProgressRef.current.reAnimate()
         setPlay(false)
     }
+
+
 
     const stop = () => {
         setPlay(false);
         setRemainingTime(item?.workingSessions * 60);
     };
     return (
-        <TouchableWithoutFeedback onPress={hideBottomNav}>
+        <TouchableWithoutFeedback>
             <Container insets={insets} colors={colors}>
                 <CardContainer>
                     <TaskCard title={item.title} time={item?.workingSessions} icon={item.taskIcon} />
@@ -106,9 +179,9 @@ export const TimerScreen = ({ route, navigation, params }) => {
                         titleFontSize={60}
                         clockwise={true}
                         strokeColorConfig={[
-                            { color: 'red', value: ((remainingTime * 60 ) * 0.25) /60 },
-                            { color: 'yellow', value: ((remainingTime * 60) * 0.5) / 60},
-                            { color: '#45d642', value: ((remainingTime * 60) * 1)/60 },
+                            { color: 'red', value: ((remainingTime * 60) * 0.25) / 60 },
+                            { color: 'yellow', value: ((remainingTime * 60) * 0.5) / 60 },
+                            { color: '#45d642', value: ((remainingTime * 60) * 1) / 60 },
                         ]}
                         titleStyle={{
                             fontWeight: '600',
@@ -141,7 +214,7 @@ export const TimerScreen = ({ route, navigation, params }) => {
                             }
 
                         </Buttons>
-                        <Buttons 
+                        <Buttons
                             colors={colors}
                             onPress={stop}
                         >
@@ -150,21 +223,46 @@ export const TimerScreen = ({ route, navigation, params }) => {
                     </ButtonContainer>
 
                     <BreaksContainers>
-                        <Button
-                            fontSize={mScale(12)}
-                            width={100}
-                            height={mScale(45)}
-                            alternate={true}
-                        >Long break</Button>
-                        <Button
-                            width={100}
-                            height={mScale(45)}
-                            fontSize={mScale(12)}
-                        >Short break</Button>
+                        {
+                            !longBreakComplete ?
+                                <Button
+                                    fontSize={mScale(12)}
+                                    width={100}
+                                    height={mScale(45)}
+                                    alternate={true}
+                                    onPress={startLongBreak}
+                                    disabled={breakActive}
+                                >Long break</Button>
+                                :
+                                null
+                        }
+
+                        {
+                            !shortBreakComplete ?
+                                <Button
+                                    width={100}
+                                    height={mScale(45)}
+                                    fontSize={mScale(12)}
+                                    onPress={startShortBreak}
+                                    disabled={breakActive}
+
+                                >Short break</Button>
+                                :
+                                null
+                        }
+
+
                     </BreaksContainers>
+                    {
+                        breakActive &&
+                        <BreakText colors={colors}>
+                            <Text style={{ fontWeight: 600 }}>{formatTime(longBreak)}</Text> of {breakType} break remaining
+                        </BreakText>
+                    }
+
+
 
                 </TimerContainer>
-
             </Container>
         </TouchableWithoutFeedback>
     );
@@ -219,5 +317,10 @@ const BreaksContainers = styled.View`
     flex-direction: row;
     justify-content: center;
     gap:30%;
+    margin-top: ${vScale(20)}px;
+`
+
+const BreakText = styled.Text`
+    color: ${({ colors }) => colors.textColor};
     margin-top: ${vScale(20)}px;
 `

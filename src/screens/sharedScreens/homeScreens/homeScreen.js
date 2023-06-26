@@ -4,12 +4,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Backdrop, BackdropSubheader, Badge } from "@react-native-material/core";
 import { useState, useContext, useRef, useEffect, useLayoutEffect } from "react";
 import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
-import { mScale, removeTask, setTimeOfDay, vScale } from '../../../infrastructure/utilities/utilFunctions';
+import { getQuotes, mScale, removeTask, setTimeOfDay, vScale } from '../../../infrastructure/utilities/utilFunctions';
 import { Ionicons } from '@expo/vector-icons';
 import CircularProgress from "react-native-circular-progress-indicator";
 import { TaskCard } from "../../../ui_elements/taskCard";
 import { TaskContext } from "../../../infrastructure/utilities/taskContext/taskContext";
 import { SharedElement } from "react-native-shared-element";
+import { getQuote } from "../../../infrastructure/utilities/utilFunctions";
 
 
 
@@ -20,6 +21,19 @@ export const HomeScreen = ({ navigation }) => {
     const [homeTask, setHomeTask] = useState([])
     const pan = useRef(new Animated.Value(0)).current
     const [backDropRevealed, setBackdropRevealed] = useState(false)
+    const [completedTask, setCompletedTask] = useState([])
+    const [taskPercentage, setTaskPercentage] = useState(0)
+
+
+
+    const calculateTaskPercentage = () => {
+        if (completedTask.length > 0) {
+            const total = (completedTask?.length / homeTask?.length) * 100;
+            setTaskPercentage(total)
+        }
+    }
+
+
 
 
     const panResponder = useRef(
@@ -58,6 +72,7 @@ export const HomeScreen = ({ navigation }) => {
             );
         });
         setHomeTask(currentTask)
+        // calculateTaskPercentage()
     }, [tasks]);
 
 
@@ -85,12 +100,26 @@ export const HomeScreen = ({ navigation }) => {
                             },
                             shadowOpacity: 0.1,
                             shadowRadius: 20
-
                         }}
                     >
                         <CircularProgressContainer>
                             <CircularProgress
-
+                                value={taskPercentage}
+                                title={`${taskPercentage}%`}
+                                inActiveStrokeColor={colors.primary}
+                                inActiveStrokeOpacity={0.2}
+                                progressValueStyle={{
+                                    display: "none"
+                                }}
+                                titleStyle={{
+                                    fontSize: mScale(20),
+                                    fontWeight: "bold",
+                                }}
+                                strokeColorConfig={[
+                                    { color: 'red', value: 10 },
+                                    { color: 'yellow', value: 50 },
+                                    { color: '#45d642', value: 100 },
+                                ]}
                             />
                         </CircularProgressContainer>
                         <TextView>
@@ -107,16 +136,27 @@ export const HomeScreen = ({ navigation }) => {
                     <HomeContent
                         showsVerticalScrollIndicator={false}
                     >
-                        {homeTask?.map((item, index) => (
-                            <TaskCard
-                                key={index}
-                                title={item.title}
-                                time={item.workingSessions}
-                                icon={item.taskIcon}
-                                onPress={() => { navigation.navigate("Timer", { item }) }}
-                                deleteTask={() => deleteTask(tasks, item)}
-                            />
-                        ))}
+                        {
+                            homeTask?.length > 0 ?
+                                homeTask?.map((item, index) => (
+                                    <TaskCard
+                                        key={index}
+                                        title={item.title}
+                                        time={item.workingSessions}
+                                        icon={item.taskIcon}
+                                        onPress={() => { navigation.navigate("Timer", { item }) }}
+                                        deleteTask={() => deleteTask(tasks, item)}
+                                    />
+                                ))
+                                :
+                                <Text
+                                    style={{
+                                        color: "grey",
+                                        marginTop: "30%"
+                                    }}
+                                >You have no scheduled task for today</Text>
+                        }
+
                     </HomeContent>
 
                 </HomeContentContainer>
@@ -150,15 +190,16 @@ const BackdropHeaderComponent = () => {
 }
 
 const BackLayerComponent = () => {
+    const quote = getQuote();
     return (
         <BackLayerContainer>
-            <BackLayerText>It was said in the days of old, "make hay while the sun shines".
-                We still live byt that till date
+            <BackLayerText>
+                {quote?.quote}
             </BackLayerText>
-            <AuthorText>Ben Larson...</AuthorText>
+            <AuthorText>{quote.author}</AuthorText>
         </BackLayerContainer>
-    )
-}
+    );
+};
 
 //backdrop styles 
 const BackdropHeaderContainer = styled.View`
@@ -177,7 +218,7 @@ const MorningText = styled.Text`
     color:#ffff;
     font-weight:600;
 `
-const BackLayerContainer = styled.View`
+const BackLayerContainer = styled.ScrollView`
     height:${mScale(100)}px;
     padding-horizontal: ${mScale(20)}px;
 `
@@ -209,6 +250,7 @@ const HomeContentContainer = styled(Animated.View)`
     padding-bottom:${({ insets }) => insets.bottom}px;
     padding-horizontal: ${mScale(20)}px !important;
 `
+
 const PanArea = styled.View`
     width:100%;
     height: ${mScale(20)}px;

@@ -109,7 +109,7 @@ export const TaskScreen = () => {
                                     key={index}
                                     index={index}
                                     title={item.title}
-                                    time={item.time}
+                                    time={item.workingSessions}
                                     icon={item.taskIcon}
                                     deleteTask={() => deleteTask(tasks, item)}
                                 />

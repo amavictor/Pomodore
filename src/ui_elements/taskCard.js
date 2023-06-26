@@ -3,7 +3,7 @@ import { mScale, vScale } from '../infrastructure/utilities/utilFunctions';
 import { PlayIcon } from "./taskIcons/taskIcons";
 import { useContext, useLayoutEffect, useRef } from 'react';
 import { ThemeContext } from '../infrastructure/utilities/themeContext/themeContext';
-import { View, Animated, PanResponder, Image, UIManager, LayoutAnimation } from "react-native";
+import { View, Animated, PanResponder, Image, UIManager, LayoutAnimation, Text } from "react-native";
 import { useEffect } from 'react';
 import * as Haptics from 'expo-haptics';
 import { useNavigation } from '@react-navigation/native';
@@ -31,7 +31,6 @@ export const TaskCard = ({
         PanResponder.create({
             // onStartShouldSetPanResponder: () => true,
             onMoveShouldSetPanResponder: (_, gestureState) => {
-                // console.log(gestureState)
                 return (
                     (Math.abs(gestureState.dx) > Math.abs(gestureState.dy * 3) && gestureState.dx < -10) ||
                     (Math.abs(gestureState.dx) > Math.abs(gestureState.dy * 3) && gestureState.dx > -1000)
@@ -102,6 +101,16 @@ export const TaskCard = ({
                 </ViewContainer>
                 <PlayIcon onPress={ onPress} />
             </Container>
+            <Text
+                style={{
+                    position: "absolute",
+                    top: "40%",
+                    left: mScale(10),
+                    zIndex: -1,
+                    color: colors.textColor,
+                    fontSize:mScale(10)
+                }}
+            >Swipe Left to delete</Text>
             <Animated.Image
                 source={require("../../assets/icons/delete.png")}
                 style={{

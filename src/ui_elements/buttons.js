@@ -12,6 +12,8 @@ export const Button = ({
   fontSize,
   outline,
   alternate,
+  disabled,
+  onPress,
   ...otherProps
 }) => {
   const { colors } = useContext(ThemeContext);
@@ -26,6 +28,7 @@ export const Button = ({
       fontSize={fontSize}
       outline={outline} // Added outline prop here
       alternate={alternate}
+      onPress={!disabled ? onPress : null}
       {...otherProps}
     >
       <ButtonText
