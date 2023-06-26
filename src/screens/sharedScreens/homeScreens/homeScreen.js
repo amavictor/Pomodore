@@ -108,21 +108,14 @@ export const HomeScreen = ({ navigation }) => {
                         showsVerticalScrollIndicator={false}
                     >
                         {homeTask?.map((item, index) => (
-                            <Pressable
-                                style={{
-                                    width: "100%"
-                                }}
-                                onPress={() => { navigation.navigate("Timer", { item }) }}>
-                                <TaskCard
-                                    key={index}
-                                    title={item.title}
-                                    time={item.workingSessions}
-                                    icon={item.taskIcon}
-                                    deleteTask={() => deleteTask(tasks, item)}
-                                />
-
-                            </Pressable>
-
+                            <TaskCard
+                                key={index}
+                                title={item.title}
+                                time={item.workingSessions}
+                                icon={item.taskIcon}
+                                onPress={() => { navigation.navigate("Timer", { item }) }}
+                                deleteTask={() => deleteTask(tasks, item)}
+                            />
                         ))}
                     </HomeContent>
 

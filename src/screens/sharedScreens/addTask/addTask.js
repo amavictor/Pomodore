@@ -56,7 +56,7 @@ export const AddTaskScreen = ({ navigation }) => {
         date: defaultDate,
         startTime: defaultTime,
         category: "",
-        workingSessions: 1,
+        workingSessions: 0,
         longBreak: 1,
         shortBreak: 1,
         taskIcon: taskIcon
@@ -69,7 +69,7 @@ export const AddTaskScreen = ({ navigation }) => {
             date: defaultDate,
             startTime: defaultTime,
             category: "",
-            workingSessions: 30,
+            workingSessions: 1,
             longBreak: 1,
             shortBreak: 1,
             taskIcon: taskIcon
@@ -162,7 +162,6 @@ export const AddTaskScreen = ({ navigation }) => {
 
     const submitTask = async () => {
         setIsLoading(true)
-        setTasks([...tasks, task])
         if (
             (
                 task.title === "" ||
@@ -179,6 +178,7 @@ export const AddTaskScreen = ({ navigation }) => {
             setIsLoading(false)
         }
         else {
+            setTasks([...tasks, task])
             await AsyncStorage.setItem("tasks", JSON.stringify(tasks))
             setTask({
                 title: "",
@@ -322,7 +322,7 @@ export const AddTaskScreen = ({ navigation }) => {
                             setTask({ ...task, workingSessions: Math.round(value) })
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
                         }}
-                        step={5}
+                        step={2}
                     />
                 </InputContainer>
 

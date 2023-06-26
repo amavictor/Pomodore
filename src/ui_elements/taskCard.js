@@ -20,6 +20,7 @@ export const TaskCard = ({
     time,
     icon,
     deleteTask,
+    onPress,
     ...otherProps }) => {
     const { colors } = useContext(ThemeContext);
     const pan = useRef(new Animated.Value(0)).current;
@@ -30,6 +31,7 @@ export const TaskCard = ({
         PanResponder.create({
             // onStartShouldSetPanResponder: () => true,
             onMoveShouldSetPanResponder: (_, gestureState) => {
+                // console.log(gestureState)
                 return (
                     (Math.abs(gestureState.dx) > Math.abs(gestureState.dy * 3) && gestureState.dx < -10) ||
                     (Math.abs(gestureState.dx) > Math.abs(gestureState.dy * 3) && gestureState.dx > -1000)
@@ -89,14 +91,16 @@ export const TaskCard = ({
                 colors={colors}
                 {...panResponder.panHandlers}
             >
-                <ViewContainer>
+                <ViewContainer
+                    onPress={onPress}
+                >
                     {icon}
                     <View>
                         <Title colors={colors}>{title}</Title>
                         <Time>{time} minutes</Time>
                     </View>
                 </ViewContainer>
-                <PlayIcon />
+                <PlayIcon onPress={ onPress} />
             </Container>
             <Animated.Image
                 source={require("../../assets/icons/delete.png")}
@@ -137,10 +141,11 @@ const Time = styled.Text`
     color: gray;
   `;
 
-const ViewContainer = styled.View`
+const ViewContainer = styled.Pressable`
     flex-direction: row;
     align-items: center;
     gap: ${mScale(30)}px;
+    width: 87%;
   `;
 
 const Body = styled.View`
