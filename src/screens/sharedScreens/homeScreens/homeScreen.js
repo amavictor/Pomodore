@@ -1,16 +1,16 @@
 import styled from "styled-components/native"
-import { View, Text, PanResponder, ScrollView, Button, Animated, TouchableOpacity, Pressable } from "react-native"
+import { Text, PanResponder, ScrollView, Button, Animated } from "react-native"
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Backdrop, BackdropSubheader, Badge } from "@react-native-material/core";
-import { useState, useContext, useRef, useEffect, useLayoutEffect } from "react";
+import { useState, useContext, useRef, useEffect, } from "react";
 import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
-import { getQuotes, mScale, removeTask, setTimeOfDay, vScale } from '../../../infrastructure/utilities/utilFunctions';
+import { mScale, setTimeOfDay, vScale } from '../../../infrastructure/utilities/utilFunctions';
 import { Ionicons } from '@expo/vector-icons';
 import CircularProgress from "react-native-circular-progress-indicator";
 import { TaskCard } from "../../../ui_elements/taskCard";
 import { TaskContext } from "../../../infrastructure/utilities/taskContext/taskContext";
-import { SharedElement } from "react-native-shared-element";
 import { getQuote } from "../../../infrastructure/utilities/utilFunctions";
+import { useFocusEffect } from "@react-navigation/native";
 
 
 
@@ -21,19 +21,27 @@ export const HomeScreen = ({ navigation }) => {
     const [homeTask, setHomeTask] = useState([])
     const pan = useRef(new Animated.Value(0)).current
     const [backDropRevealed, setBackdropRevealed] = useState(false)
-    const [completedTask, setCompletedTask] = useState([])
+    const [completedTasks, setCompletedTasks] = useState([])
     const [taskPercentage, setTaskPercentage] = useState(0)
 
 
 
-    const calculateTaskPercentage = () => {
-        if (completedTask.length > 0) {
-            const total = (completedTask?.length / homeTask?.length) * 100;
-            setTaskPercentage(total)
-        }
-    }
 
+    useFocusEffect(() => calculateTaskPercentage())
 
+    useEffect(() => {
+        const currentDate = new Date();
+        const currentTask = tasks.filter((item) => {
+            const itemDate = new Date(item.date);
+            return (
+                itemDate.getFullYear() === currentDate.getFullYear() &&
+                itemDate.getMonth() === currentDate.getMonth() &&
+                itemDate.getDate() === currentDate.getDate()
+            );
+        });
+        setHomeTask(currentTask)
+        console.log(completedTasks, "taskss")
+    }, [tasks]);
 
 
     const panResponder = useRef(
@@ -56,24 +64,29 @@ export const HomeScreen = ({ navigation }) => {
         })
     ).current;
 
-    const deleteTask = (tasks, item) => {
-        const updatedTasks = tasks?.filter((activity) => activity.title !== item.title);
-        setTasks(updatedTasks);
+
+    const showTextOnPercentage = () => {
+        switch (true) {
+            case (taskPercentage >= 0 && taskPercentage < 25):
+                return "Today is a great day to Achieve results";
+            case (taskPercentage >= 25 && taskPercentage < 75):
+                return "You're doing great! Keep it up!";
+            case (taskPercentage >= 75 && taskPercentage < 100):
+                return "You're almost done!";
+            case (taskPercentage === 100):
+                return "Great work! You're done!";
+            default:
+                return "Today is a great day to Achieve results";
+        }
     };
 
-    useEffect(() => {
-        const currentDate = new Date();
-        const currentTask = tasks.filter((item) => {
-            const itemDate = new Date(item.date);
-            return (
-                itemDate.getFullYear() === currentDate.getFullYear() &&
-                itemDate.getMonth() === currentDate.getMonth() &&
-                itemDate.getDate() === currentDate.getDate()
-            );
-        });
-        setHomeTask(currentTask)
-        // calculateTaskPercentage()
-    }, [tasks]);
+    const calculateTaskPercentage = () => {
+        if (completedTasks.length > 0) {
+            const total = (completedTasks?.length / homeTask?.length) * 100;
+            setTaskPercentage(total)
+
+        }
+    }
 
 
 
@@ -123,8 +136,8 @@ export const HomeScreen = ({ navigation }) => {
                             />
                         </CircularProgressContainer>
                         <TextView>
-                            <StatusText colors={colors}>Today is a great day to Achieve results</StatusText>
-                            <CompletedText colors={colors}>0 0f {homeTask?.length} completed</CompletedText>
+                            <StatusText colors={colors}>{showTextOnPercentage()}</StatusText>
+                            <CompletedText colors={colors}>{completedTasks?.length} 0f {homeTask?.length} completed</CompletedText>
                         </TextView>
                     </StatusCard>
 
@@ -138,27 +151,41 @@ export const HomeScreen = ({ navigation }) => {
                     >
                         {
                             homeTask?.length > 0 ?
-                                homeTask?.map((item, index) => (
-                                    <TaskCard
-                                        key={index}
-                                        title={item.title}
-                                        time={item.workingSessions}
-                                        icon={item.taskIcon}
-                                        onPress={() => { navigation.navigate("Timer", { item }) }}
-                                        deleteTask={() => deleteTask(tasks, item)}
-                                    />
-                                ))
+                                homeTask.map((item, index) => {
+                                    const isCompleted = completedTasks.some(completedItem => completedItem.title === item.title);
+                                    if (isCompleted) {
+                                        return null;
+                                    } else {
+                                        return (
+                                            <TaskCard
+                                                key={index}
+                                                title={item.title}
+                                                time={item.workingSessions}
+                                                icon={item.taskIcon}
+                                                onPress={() => {
+                                                    navigation.navigate("Timer", {
+                                                        item: item,
+                                                        setCompletedTasks,
+                                                    });
+                                                }}
+                                                allTasks={tasks}
+                                                specificTask={item}
+                                                setAllTasks={setTasks}
+                                            />
+                                        );
+                                    }
+                                })
                                 :
                                 <Text
                                     style={{
                                         color: "grey",
-                                        marginTop: "30%"
+                                        marginTop: "30%",
                                     }}
-                                >You have no scheduled task for today</Text>
+                                >
+                                    You have no scheduled task for today
+                                </Text>
                         }
-
                     </HomeContent>
-
                 </HomeContentContainer>
             </Backdrop>
         </HomeContainer>

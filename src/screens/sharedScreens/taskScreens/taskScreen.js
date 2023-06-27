@@ -46,7 +46,7 @@ export const TaskScreen = () => {
                 <TaskText colors={colors}>All tasks ({tasks.length})</TaskText>
             </TaskHeader>
             {
-                tasks.length === 0 ?
+                tasks?.length === 0 ?
                     <View
                         style={{
                             flex: 1,
@@ -111,7 +111,8 @@ export const TaskScreen = () => {
                                     title={item.title}
                                     time={item.workingSessions}
                                     icon={item.taskIcon}
-                                    deleteTask={() => deleteTask(tasks, item)}
+                                    setAllTasks={setTasks}
+                                    specificTask={item}
                                 />
                             </Animated.View>
                         }}

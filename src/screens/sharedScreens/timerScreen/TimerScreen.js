@@ -1,7 +1,5 @@
 import { Text, View, Image, TouchableWithoutFeedback } from "react-native"
 import { TaskCard } from "../../../ui_elements/taskCard"
-import Animated from "react-native-reanimated";
-import { SharedElement } from 'react-navigation-shared-element';
 import styled from "styled-components/native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
@@ -18,7 +16,10 @@ import { useFocusEffect } from "@react-navigation/native";
 
 export const TimerScreen = ({ route, navigation, params }) => {
     const { colors } = useContext(ThemeContext);
-    const { item } = route.params;
+    const {
+        item,
+        setCompletedTasks,
+    } = route.params
     const insets = useSafeAreaInsets();
     const [remainingTime, setRemainingTime] = useState(item?.workingSessions * 60);
     const [longBreak, setLongBreak] = useState(item?.longBreak * 60)
@@ -48,7 +49,7 @@ export const TimerScreen = ({ route, navigation, params }) => {
     useEffect(() => {
         if (remainingTime === 0) {
             setPlay(false);
-            return
+            return onComplete()
         }
     }, [remainingTime]);
 
@@ -103,7 +104,7 @@ export const TimerScreen = ({ route, navigation, params }) => {
             setPlay(true);
             setLongBreak(0)
             setBreakActive(false)
-            setLongBreakComplete(true)
+            setShortBreakComplete(true)
             return
         }
     }, [shortBreak]);
@@ -146,6 +147,12 @@ export const TimerScreen = ({ route, navigation, params }) => {
         setMaxValue(item?.workingSessions * 60)
         timerProgressRef.current.reAnimate()
         setPlay(false)
+    }
+
+    const onComplete = () => {
+        const updatedItem = { ...item, completed: true };
+        setCompletedTasks(prevCompletedTasks => [...prevCompletedTasks,updatedItem ])
+        navigation.navigate("Home")
     }
 
 

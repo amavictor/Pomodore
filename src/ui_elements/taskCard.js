@@ -19,13 +19,23 @@ export const TaskCard = ({
     title,
     time,
     icon,
-    deleteTask,
+    allTasks,
+    specificTask,
+    setAllTasks,
     onPress,
+    completed=false,
     ...otherProps }) => {
     const { colors } = useContext(ThemeContext);
     const pan = useRef(new Animated.Value(0)).current;
     const deleteIconScale = useRef(new Animated.Value(1)).current;
     const deleteThreshold = -110;
+
+
+
+    const deleteTask = (tasks, item) => {
+        const updatedTasks = tasks?.filter((activity) => activity.title !== item.title);
+        setAllTasks(updatedTasks);
+    };
 
     const panResponder = useRef(
         PanResponder.create({
@@ -54,7 +64,7 @@ export const TaskCard = ({
             onPanResponderRelease: (_, gestureState) => {
                 if (gestureState.dx < deleteThreshold) {
                     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
-                    deleteTask()
+                    deleteTask(allTasks, specificTask)
                 } else {
                     Animated.spring(pan, {
                         toValue: 0,
@@ -88,6 +98,7 @@ export const TaskCard = ({
                     transform: [{ translateX: pan }],
                 }}
                 colors={colors}
+                completed={completed}
                 {...panResponder.panHandlers}
             >
                 <ViewContainer
@@ -99,7 +110,7 @@ export const TaskCard = ({
                         <Time>{time} minutes</Time>
                     </View>
                 </ViewContainer>
-                <PlayIcon onPress={ onPress} />
+                <PlayIcon onPress={onPress} />
             </Container>
             <Text
                 style={{
@@ -108,7 +119,7 @@ export const TaskCard = ({
                     left: mScale(10),
                     zIndex: -1,
                     color: colors.textColor,
-                    fontSize:mScale(10)
+                    fontSize: mScale(10)
                 }}
             >Swipe Left to delete</Text>
             <Animated.Image
@@ -133,7 +144,7 @@ const Container = styled(Animated.View)`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    background-color: ${({ colors }) => colors.backgroundColor};
+    background-color: ${({ colors, completed }) => completed ? "#45d642" :  colors.backgroundColor};
     border-radius: ${mScale(14)}px;
   `;
 

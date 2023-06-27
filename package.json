@@ -42,6 +42,7 @@
     "react-native-screens": "~3.20.0",
     "react-native-shared-element": "^0.8.8",
     "react-native-size-matters": "^0.4.0",
+    "react-native-snackbar": "^2.6.2",
     "react-native-svg": "13.4.0",
     "styled-components": "^5.3.11"
   },
