@@ -137,6 +137,7 @@ export const TaskCard = ({
         </Body>
     );
 };
+
 const Container = styled(Animated.View)`
     width: 100%;
     height: ${mScale(80)}px;

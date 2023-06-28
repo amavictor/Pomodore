@@ -14,7 +14,7 @@ export const TaskScreen = () => {
     const scrollY = useRef(new Animated.Value(0)).current
     const insets = useSafeAreaInsets()
     const { colors } = useContext(ThemeContext)
-    const { tasks,setTasks } = useContext(TaskContext)
+    const { tasks, setTasks } = useContext(TaskContext)
 
     // const diffClamp = Animated.diffClamp(scrollY, 0, vScale(60))
 
@@ -46,22 +46,8 @@ export const TaskScreen = () => {
                 <TaskText colors={colors}>All tasks ({tasks.length})</TaskText>
             </TaskHeader>
             {
-                tasks?.length === 0 ?
-                    <View
-                        style={{
-                            flex: 1,
-                            alignItems: "center",
-                            justifyContent: "center"
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontSize: mScale(16),
-                                color: "gray"
-                            }}
-                        >You have no activities</Text>
-                    </View>
-                    :
+                tasks.length > 0 ?
+
                     <Animated.FlatList
                         data={tasks}
                         contentContainerStyle={{
@@ -93,12 +79,6 @@ export const TaskScreen = () => {
                                 extrapolate: "clamp"
                             })
 
-                            deleteTask = (tasks, item) => {
-                                const updatedTasks = tasks?.filter((activity) => activity.title !== item.title);
-                                console.log(updatedTasks, "Popo")
-                                setTasks(updatedTasks);
-                            };
-
                             return <Animated.View
                                 style={{
                                     opacity,
@@ -111,6 +91,7 @@ export const TaskScreen = () => {
                                     title={item.title}
                                     time={item.workingSessions}
                                     icon={item.taskIcon}
+                                    allTasks={tasks}
                                     setAllTasks={setTasks}
                                     specificTask={item}
                                 />
@@ -126,6 +107,23 @@ export const TaskScreen = () => {
                         scrollEventThrottle={16}
                     >
                     </Animated.FlatList>
+
+                    :
+                    <View
+                        style={{
+                            flex: 1,
+                            alignItems: "center",
+                            justifyContent: "center"
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontSize: mScale(16),
+                                color: "gray"
+                            }}
+                        >You have no activities</Text>
+                    </View>
+
             }
 
         </TaskContainer>

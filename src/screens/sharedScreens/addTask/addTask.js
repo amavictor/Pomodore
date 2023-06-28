@@ -119,31 +119,31 @@ export const AddTaskScreen = ({ navigation }) => {
 
     const categoryData = [
         { key: '1', value: 'FOCUS', disabled: true },
-        { key: '2', value: 'Meditation' },
-        { key: '3', value: 'Reading' },
-        { key: '4', value: 'Coding' },
+        { key: '2', value: 'MEDITATION' },
+        { key: '3', value: 'READING' },
+        { key: '4', value: 'CODING' },
         { key: '5', value: 'FUN', disabled: true },
-        { key: '6', value: 'Music' },
-        { key: '7', value: 'Exercise' },
+        { key: '6', value: 'MUSIC' },
+        { key: '7', value: 'EXERCISE' },
     ]
 
     const selectCategory = (item) => {
         let selectedTaskIcon;
 
         switch (item) {
-            case "Meditation":
+            case "MEDITATION":
                 selectedTaskIcon = <MeditationIcon />;
                 break;
-            case "Reading":
+            case "READING":
                 selectedTaskIcon = <ReadingIcon />;
                 break;
-            case "Coding":
+            case "CODING":
                 selectedTaskIcon = <CodingIcon />;
                 break;
-            case "Music":
+            case "MUSIC":
                 selectedTaskIcon = <AudioIcon />;
                 break;
-            case "Exercise":
+            case "EXERCISE":
                 selectedTaskIcon = <ExerciseIcon />;
                 break;
             default:
@@ -289,18 +289,22 @@ export const AddTaskScreen = ({ navigation }) => {
                             alignItems: "center",
                             borderColor: colors.buttonOutlineColor
                         }}
-                        dropdownTextStyles={{
-                            fontSize: mScale(14),
-                        }}
                         dropdownItemStyles={{
-                            marginVertical: vScale(8)
+                            marginVertical: vScale(8),
+                            backgroundColor: colors.alternatePrimary
                         }}
                         disabledItemStyles={{
                             marginVertical: vScale(8)
                         }}
                         disabledTextStyles={{
-                            fontSize: mScale(16),
+                            fontSize: mScale(20),
+                            fontWeight:700
                         }}
+                        dropdownTextStyles={{
+                            fontSize: mScale(18),
+                            fontWeight:500
+                        }}
+                        onSelect={()=>Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)}
                     />
                 </InputContainer>
 

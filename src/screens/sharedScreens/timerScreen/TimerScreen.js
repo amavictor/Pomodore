@@ -1,4 +1,9 @@
-import { Text, View, Image, TouchableWithoutFeedback } from "react-native"
+import {
+    Text,
+    AppState,
+    TouchableWithoutFeedback,
+    Alert
+} from "react-native"
 import { TaskCard } from "../../../ui_elements/taskCard"
 import styled from "styled-components/native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -10,7 +15,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { Button } from "../../../ui_elements/buttons"
-import { useFocusEffect } from "@react-navigation/native";
 
 
 
@@ -31,6 +35,9 @@ export const TimerScreen = ({ route, navigation, params }) => {
     const [maxValue, setMaxValue] = useState(item?.workingSessions * 60);
     const [longBreakComplete, setLongBreakComplete] = useState(false)
     const [shortBreakComplete, setShortBreakComplete] = useState(false)
+    const [appState, setAppState] = useState(AppState.currentState)
+    const [isRunning, setIsRunning] = useState(false)
+
 
     useEffect(() => {
         let intervalId;
@@ -109,12 +116,56 @@ export const TimerScreen = ({ route, navigation, params }) => {
         }
     }, [shortBreak]);
 
+    useEffect(() => 
+        navigation.addListener("beforeRemove", (e) => {
+            if(isRunning || remainingTime >0 ) {
+                e.preventDefault()
+                Alert.alert(
+                    'Discard timer?',
+                    'If you leave the screen, the timer will reset.',
+                    [
+                      { text: "Don't leave", style: 'cancel', onPress: () => {} },
+                      {
+                        text: 'Leave',
+                        style: 'destructive',
+                        onPress: () => navigation.dispatch(e.data.action),
+                      },
+                    ]
+                  );
+            }
+        }),
+        [navigation, remainingTime, isRunning]
+    )
 
+
+    const handleAppStateChange = (nextAppState) => {
+        if (appState.match(/inactive|background/) && nextAppState === "active") {
+            // App has come to the foreground
+            if (play) {
+                setIsRunning(true)
+            }
+        } else {
+            // App has gone to the background
+            if (play) {
+                setIsRunning(true)
+                console.log(remainingTime, "From Background")
+            }
+        }
+        setAppState(nextAppState);
+    };
     const formatTime = (time) => {
         const minutes = Math.floor(time / 60).toString().padStart(2, '0');
         const seconds = (time % 60).toString().padStart(2, '0');
         return `${minutes}:${seconds}`;
     };
+
+    useEffect(() => {
+        AppState.addEventListener("change", handleAppStateChange);
+      
+        return () => {
+          AppState.removeEventListener("change", handleAppStateChange);
+        };
+      }, [])
 
 
     const startLongBreak = () => {
@@ -137,6 +188,7 @@ export const TimerScreen = ({ route, navigation, params }) => {
         setPlay(prevPlay => !prevPlay);
         if (!play) {
             timerProgressRef.current.play();
+            setIsRunning(true)
         } else {
             timerProgressRef.current.pause();
         }
@@ -146,12 +198,13 @@ export const TimerScreen = ({ route, navigation, params }) => {
         setRemainingTime(item?.workingSessions * 60)
         setMaxValue(item?.workingSessions * 60)
         timerProgressRef.current.reAnimate()
+        setIsRunning(false)
         setPlay(false)
     }
 
     const onComplete = () => {
         const updatedItem = { ...item, completed: true };
-        setCompletedTasks(prevCompletedTasks => [...prevCompletedTasks,updatedItem ])
+        setCompletedTasks(prevCompletedTasks => [...prevCompletedTasks, updatedItem])
         navigation.navigate("Home")
     }
 
@@ -159,6 +212,7 @@ export const TimerScreen = ({ route, navigation, params }) => {
 
     const stop = () => {
         setPlay(false);
+        setIsRunning(false)
         setRemainingTime(item?.workingSessions * 60);
     };
     return (

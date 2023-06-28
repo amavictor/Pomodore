@@ -22,8 +22,8 @@ const AddComponent = () => {
         <TouchableOpacity
             onPress={()=>Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
             style={{
-                width: mScale(60),
-                height: mScale(60),
+                width: mScale(50),
+                height: mScale(50),
                 backgroundColor: colors.primary,
                 alignItems: "center",
                 justifyContent: "center",
