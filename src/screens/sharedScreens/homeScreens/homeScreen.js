@@ -142,7 +142,7 @@ export const HomeScreen = ({ navigation }) => {
                     </StatusCard>
 
                     <SeeAllMenu>
-                        <Task colors={colors}>Today Tasks({homeTask?.length})</Task>
+                        <Task colors={colors}>Today Tasks ({homeTask?.length})</Task>
                         <Button color={`${colors.primary}`} title="See all" onPress={() => navigation.navigate("Task")} />
                     </SeeAllMenu>
 

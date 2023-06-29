@@ -10,6 +10,10 @@ import { BottomNavigation } from "./bottom.navigation";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+//NOtification imports
+import * as Device from "expo-device"
+import *  as Notifications from "expo-notifications"
+
 
 const Stack = createStackNavigator()
 
@@ -17,7 +21,7 @@ const Stack = createStackNavigator()
 
 export const Navigation = () => {
 
-    const {user, setUser } = useContext(AuthContext)
+    const { user, setUser } = useContext(AuthContext)
     const { colors } = useContext(ThemeContext)
     const [persistUser, setPersistUSer] = useState()
 
@@ -28,8 +32,8 @@ export const Navigation = () => {
             if (user != null) {
                 setPersistUSer(JSON.parse(user))
             }
-       })()
-    },[])
+        })()
+    }, [])
 
     return (
         <NavigationBackground colors={colors}>

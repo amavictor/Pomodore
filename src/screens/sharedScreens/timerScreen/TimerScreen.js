@@ -2,7 +2,8 @@ import {
     Text,
     AppState,
     TouchableWithoutFeedback,
-    Alert
+    Alert,
+    Vibration
 } from "react-native"
 import { TaskCard } from "../../../ui_elements/taskCard"
 import styled from "styled-components/native";
@@ -15,6 +16,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { Button } from "../../../ui_elements/buttons"
+import { scheduleNotification } from "../../../infrastructure/utilities/pushNotifications";
+import * as Haptics from "expo-haptics"
+import { VIBRATION_PATTERN } from "../../../infrastructure/utilities/constants";
 
 
 
@@ -38,6 +42,7 @@ export const TimerScreen = ({ route, navigation, params }) => {
     const [appState, setAppState] = useState(AppState.currentState)
     const [isRunning, setIsRunning] = useState(false)
 
+    console.log(appState, "appstate")
 
     useEffect(() => {
         let intervalId;
@@ -128,7 +133,10 @@ export const TimerScreen = ({ route, navigation, params }) => {
                       {
                         text: 'Leave',
                         style: 'destructive',
-                        onPress: () => navigation.dispatch(e.data.action),
+                          onPress: () => {
+                              Vibration.cancel()
+                              navigation.dispatch(e.data.action)
+                          },
                       },
                     ]
                   );
@@ -148,7 +156,6 @@ export const TimerScreen = ({ route, navigation, params }) => {
             // App has gone to the background
             if (play) {
                 setIsRunning(true)
-                console.log(remainingTime, "From Background")
             }
         }
         setAppState(nextAppState);
@@ -202,10 +209,19 @@ export const TimerScreen = ({ route, navigation, params }) => {
         setPlay(false)
     }
 
-    const onComplete = () => {
+    const onComplete = async () => {
         const updatedItem = { ...item, completed: true };
         setCompletedTasks(prevCompletedTasks => [...prevCompletedTasks, updatedItem])
-        navigation.navigate("Home")
+        if (appState === "background") {
+            await scheduleNotification(`${item.title} timer completed`)
+            Haptics.NotificationFeedbackType.Success
+        }
+        else {
+            Vibration.vibrate(VIBRATION_PATTERN, true)
+            setTimeout(() => {
+                navigation.navigate("Home")
+            }, 6000)
+        }
     }
 
 
