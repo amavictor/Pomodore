@@ -121,25 +121,28 @@ export const TimerScreen = ({ route, navigation, params }) => {
         }
     }, [shortBreak]);
 
-    useEffect(() => 
+    useEffect(() =>
         navigation.addListener("beforeRemove", (e) => {
-            if(isRunning || remainingTime >0 ) {
+            if (remainingTime > 0) {
                 e.preventDefault()
                 Alert.alert(
                     'Discard timer?',
                     'If you leave the screen, the timer will reset.',
                     [
-                      { text: "Don't leave", style: 'cancel', onPress: () => {} },
-                      {
-                        text: 'Leave',
-                        style: 'destructive',
-                          onPress: () => {
-                              Vibration.cancel()
-                              navigation.dispatch(e.data.action)
-                          },
-                      },
+                        { text: "Don't leave", style: 'cancel', onPress: () => { } },
+                        {
+                            text: 'Leave',
+                            style: 'destructive',
+                            onPress: () => {
+                                Vibration.cancel()
+                                navigation.dispatch(e.data.action)
+                            },
+                        },
                     ]
-                  );
+                );
+            }
+            else {
+                return
             }
         }),
         [navigation, remainingTime, isRunning]
@@ -168,11 +171,11 @@ export const TimerScreen = ({ route, navigation, params }) => {
 
     useEffect(() => {
         AppState.addEventListener("change", handleAppStateChange);
-      
+
         return () => {
-          AppState.removeEventListener("change", handleAppStateChange);
+            AppState.removeEventListener("change", handleAppStateChange);
         };
-      }, [])
+    }, [])
 
 
     const startLongBreak = () => {
@@ -212,16 +215,13 @@ export const TimerScreen = ({ route, navigation, params }) => {
     const onComplete = async () => {
         const updatedItem = { ...item, completed: true };
         setCompletedTasks(prevCompletedTasks => [...prevCompletedTasks, updatedItem])
-        if (appState === "background") {
-            await scheduleNotification(`${item.title} timer completed`)
-            Haptics.NotificationFeedbackType.Success
-        }
-        else {
-            Vibration.vibrate(VIBRATION_PATTERN, true)
-            setTimeout(() => {
-                navigation.navigate("Home")
-            }, 6000)
-        }
+        await scheduleNotification(`${item.title} timer completed`)
+        Haptics.NotificationFeedbackType.Success
+
+        Vibration.vibrate(VIBRATION_PATTERN, true)
+        setTimeout(() => {
+            navigation.navigate("Home")
+        }, 6000)
     }
 
 

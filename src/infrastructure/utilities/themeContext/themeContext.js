@@ -6,30 +6,31 @@ export const ThemeContext = createContext()
 export const ThemeContextProvider = ({children}) => {
     const [theme, setTheme] = useState("")
     const colorScheme = Appearance.getColorScheme()
-
+    const [primary, setPrimary] = useState(null)
+    const alternatePrimary = `${ primary }80`
     const getColors = (currentTheme) => {
         if (currentTheme === "dark") {
             return {
                 backgroundColor: "#181D31",
                 textColor: "#ffffff",
-                primary: "#ef5d5d",
+                primary: primary ? primary : "#ef5d5d",
                 onBoardingIndicator: "#F6F1F7",
                 buttonOutlineColor: "#EFEFEF",
                 lineColor: "#9e9e9e",
                 activeInput: "#f5e1e1",
-                alternatePrimary:"#f0adad"
+                alternatePrimary: primary ? alternatePrimary : "#f0adad"
             }
         }
         else {
             return {
                 backgroundColor: "#ffffff",
                 textColor: "#283849",
-                primary: "#ef5d5d",
+                primary: primary ? primary : "#ef5d5d",
                 onBoardingIndicator: "#F6F1F1",
                 buttonOutlineColor: "#EFEFEF",
                 lineColor: "#9e9e9e",
                 activeInput: "#f5e1e1",
-                alternatePrimary:"#f0adad"
+                alternatePrimary: primary ? alternatePrimary : "#f0adad"
             }
         }
     }
@@ -44,11 +45,19 @@ export const ThemeContextProvider = ({children}) => {
 
     
 
+
     const colors = getColors(theme)
+
+
     
     return (
         <ThemeContext.Provider
-            value={{ theme, colors }}
+            value={{
+                theme,
+                colors,
+                setPrimary,
+                primary
+            }}
         >
             {children}
         </ThemeContext.Provider>
