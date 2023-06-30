@@ -102,7 +102,7 @@ export const BottomNavigation = () => {
                     shadowRadius: 20,
                     zIndex: 1,
                     backgroundColor: `transparent`,
-
+                    // display: route.name === "camera" ? "none" : "flex",
                 },
                 tabBarBackground: () => (
                     <TabBarBackground>
@@ -111,6 +111,9 @@ export const BottomNavigation = () => {
                 ),
                 tabBarIconStyle: {
                     justifySelf: "center"
+                },
+                tabBarVisibilityAnimationConfig: {
+                    duration: 200,
                 }
             })}
         >

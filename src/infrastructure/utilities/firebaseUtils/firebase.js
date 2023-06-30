@@ -1,6 +1,8 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
+import { getAuth, signOut } from "firebase/auth"
+import { useContext } from "react";
 import { Alert } from "react-native";
+import { AuthContext } from "../../authContext/authContext";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDQKfwy9xIVoZK6-iqH9LCCdx4gB1VycKk",
@@ -14,3 +16,15 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app)
+
+export const signOutUser = () => {
+    signOut(auth).then((response) => {
+        if (response) {
+            console.log("Signed out successfully")
+        }
+    }).catch((error) => {
+        if (error) {
+            Alert.alert("There was a problem signing you out.")
+        }
+    })
+}

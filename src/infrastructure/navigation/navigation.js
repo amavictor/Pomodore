@@ -23,14 +23,14 @@ export const Navigation = () => {
 
     const { user, setUser } = useContext(AuthContext)
     const { colors } = useContext(ThemeContext)
-    const [persistUser, setPersistUSer] = useState()
+    // const [persistUser, setPersistUSer] = useState()
 
 
     useEffect(() => {
         (async function getUser() {
             const user = await AsyncStorage.getItem("@user")
             if (user != null) {
-                setPersistUSer(JSON.parse(user))
+                setUser(JSON.parse(user))
             }
         })()
     }, [])
@@ -38,7 +38,7 @@ export const Navigation = () => {
     return (
         <NavigationBackground colors={colors}>
             {
-                (user || persistUser) ?
+                user ?
                     <BottomNavigation /> :
                     <AuthenticationNavigator />
             }
