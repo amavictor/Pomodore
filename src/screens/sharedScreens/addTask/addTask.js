@@ -287,7 +287,8 @@ export const AddTaskScreen = ({ navigation }) => {
                             backgroundColor: colors.buttonOutlineColor,
                             height: mScale(60),
                             alignItems: "center",
-                            borderColor: colors.buttonOutlineColor
+                            borderColor: colors.buttonOutlineColor,
+                            marginBottom: vScale(10)
                         }}
                         dropdownItemStyles={{
                             marginVertical: vScale(8),
@@ -321,7 +322,7 @@ export const AddTaskScreen = ({ navigation }) => {
                         maximumValue={120}
                         minimumValue={0}
                         minimumTrackTintColor={colors.primary}
-                        value={() => setTask({ ...task, workingSessions: task.workingSessions })}
+                        value={task.workingSessions}
                         onValueChange={(value) => {
                             setTask({ ...task, workingSessions: Math.round(value) })
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
@@ -340,7 +341,7 @@ export const AddTaskScreen = ({ navigation }) => {
                         maximumValue={30}
                         minimumValue={0}
                         minimumTrackTintColor={colors.primary}
-                        // value={()=>setTask({ ...task, longBreak: task.long`` })}
+                        value={task.longBreak}
                         onValueChange={(value) => {
                             setTask({ ...task, longBreak: Math.round(value) })
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
@@ -359,7 +360,7 @@ export const AddTaskScreen = ({ navigation }) => {
                         maximumValue={10}
                         minimumValue={0}
                         minimumTrackTintColor={colors.primary}
-                        // value={()=>setTask({ ...task, shortBreak: task.shortBreak })}
+                        value={task.shortBreak}
                         onValueChange={(value) => {
                             setTask({ ...task, shortBreak: Math.round(value) })
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
@@ -390,7 +391,7 @@ const AddTaskContainer = styled.ScrollView`
     background-color: ${({ colors }) => colors.backgroundColor};
 `
 const InputContainer = styled.View`
-    gap:10%;
+    
     margin-bottom:${mScale(20)}px;
 `
 const DateTimeContainer = styled.View`
@@ -407,6 +408,7 @@ const Label = styled.Text`
     font-size:${mScale(14)}px;
     font-weight:600 ;
     color:${({ colors }) => colors.textColor};
+    margin-bottom: ${vScale(20)}px;
 `
 const LabelRow = styled.View`
     flex-direction: row;

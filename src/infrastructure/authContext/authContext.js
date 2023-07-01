@@ -14,6 +14,7 @@ export const AuthContext = createContext()
 
 export const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState(null)
+    const [loggedIn, setLoggedIn] = useState(false)
     useEffect(() => {
         const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
             if (currentUser) {
@@ -27,6 +28,8 @@ export const AuthContextProvider = ({ children }) => {
     return (
         <AuthContext.Provider value={{
             user,
+            loggedIn,
+            setLoggedIn,
             setUser
         }}>
             {children}

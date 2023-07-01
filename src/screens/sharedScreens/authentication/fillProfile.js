@@ -25,6 +25,8 @@ import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet
 import { CustomBackdrop } from "../../../ui_elements/bottomSheetBackDrop";
 import * as ImagePicker from 'expo-image-picker';
 import { Camera } from "expo-camera";
+import { AuthContext } from "../../../infrastructure/authContext/authContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const FillProfile = ({ navigation, route }) => {
     const { colors } = useContext(ThemeContext)
@@ -34,6 +36,9 @@ export const FillProfile = ({ navigation, route }) => {
     const [mediaPermission, requestMediaPermission] = ImagePicker.useMediaLibraryPermissions()
 
     const [cameraPermission, requestCameraPermission] = Camera.useCameraPermissions()
+    const {setIsLoggedIn, setUser, user} = useContext(AuthContext)
+
+
 
     useEffect(() => {
         if (route.params?.imageFromCamera) {
@@ -69,6 +74,18 @@ export const FillProfile = ({ navigation, route }) => {
             navigation.navigate('camera')
         }
     }, [cameraPermission])
+
+    const enterApp = async () => {
+        setUser((user) => ({ ...user, image: image }))
+        try {
+            await AsyncStorage.setItem("@user", JSON.stringify(user))
+            setIsLoggedIn(true)
+            navigation.navigate('Home')
+        }
+        catch (e) {
+            Alert.alert(e.message)
+        }
+    }
 
     const selectImageFromGallery = async () => {
 
@@ -142,8 +159,11 @@ export const FillProfile = ({ navigation, route }) => {
 
                         </ProfileDetailsContainer>
                         <ButtonContainer>
-                            <Button width={`${mScale(160)}}`} alternate>Skip</Button>
-                            <Button width={`${mScale(160)}}`}>Start</Button>
+                            <Button  alternate>Skip</Button>
+                            <Button 
+                    
+
+                            >Start</Button>
                         </ButtonContainer>
 
                         <BottomSheetModal

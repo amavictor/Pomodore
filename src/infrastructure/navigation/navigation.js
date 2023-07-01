@@ -10,45 +10,47 @@ import { BottomNavigation } from "./bottom.navigation";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-//NOtification imports
-import * as Device from "expo-device"
-import *  as Notifications from "expo-notifications"
 
-
-const Stack = createStackNavigator()
 
 
 
 export const Navigation = () => {
-
-    const { user, setUser } = useContext(AuthContext)
-    const { colors } = useContext(ThemeContext)
-    // const [persistUser, setPersistUSer] = useState()
-
-
+    const {
+      user,
+      setUser,
+      loggedIn,
+      setLoggedIn
+    } = useContext(AuthContext);
+    const { colors } = useContext(ThemeContext);
+  
     useEffect(() => {
-        (async function getUser() {
-            const user = await AsyncStorage.getItem("@user")
-            if (user != null) {
-                setUser(JSON.parse(user))
-            }
-        })()
-    }, [])
-
+      const getUser = async () => {
+        try {
+          const user = await AsyncStorage.getItem("@user");
+          if (user !== null) {
+            setUser(JSON.parse(user));
+            setLoggedIn(true);
+          }
+        } catch (error) {
+          // Handle the error here
+          console.log("Error retrieving user:", error);
+        }
+      };
+  
+      getUser();
+    }, []);
+  
     return (
-        <NavigationBackground colors={colors}>
-            {
-                user ?
-                    <BottomNavigation /> :
-                    <AuthenticationNavigator />
-            }
-        </NavigationBackground>
-    )
-
-}
-
-const NavigationBackground = styled.View`
-    padding-top: ${Platform.OS === "android" ? StatusBar.currentHeight + "px" : "0px"};
+      <NavigationBackground colors={colors}>
+        {loggedIn ? <BottomNavigation /> : <AuthenticationNavigator />}
+      </NavigationBackground>
+    );
+  };
+  
+  const NavigationBackground = styled.View`
+    padding-top: ${Platform.OS === "android"
+      ? StatusBar.currentHeight + "px"
+      : "0px"};
     height: 100%;
     background-color: ${({ colors }) => colors.backgroundColor};
-`
+  `;

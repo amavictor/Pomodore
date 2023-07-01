@@ -133,7 +133,7 @@ export const TaskScreen = () => {
 
 const TaskContainer = styled(Animated.View)`
     flex: 1;
-    padding-top:${({ insets }) => insets.top};
+    padding-top:${({ insets }) => insets.top}px;
     background-color:#FAFAFA;
     
 `

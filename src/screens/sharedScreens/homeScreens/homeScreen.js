@@ -257,11 +257,10 @@ const AuthorText = styled.Text`
     font-size:${mScale(14)}px;
     color: white;
     font-weight:800;
-    margin-top:${mScale(10)};
+    margin-top:${mScale(10)}px;
 `
 const NotificationContainer = styled.View`
     position:relative;
-
 `
 
 

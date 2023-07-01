@@ -14,7 +14,7 @@ export const HomeNavigation = () => {
             }}
         >
             <Stack.Screen
-                name="Home"
+                name="Home-Screen"
                 component={HomeScreen}
             />
             <Stack.Screen

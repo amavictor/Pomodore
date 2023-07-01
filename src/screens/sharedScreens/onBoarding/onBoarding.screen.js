@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useState } from "react";
 import styled from "styled-components/native";
-import { Alert, Dimensions, FlatList, Text } from "react-native";
+import { Dimensions, FlatList, Platform } from "react-native";
 import { ThemeContext } from "../../../infrastructure/utilities/themeContext/themeContext";
 import { mScale } from "../../../infrastructure/utilities/utilFunctions";
 import { Button } from "../../../ui_elements/buttons";
@@ -12,7 +12,6 @@ const { width } = Dimensions.get("window");
 export const OnBoardingScreen = ({ navigation }) => {
   const { colors } = useContext(ThemeContext);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
-  const [show, setShow] = useState(false)
   const ref = useRef(null)
 
   const slides = [
@@ -49,18 +48,16 @@ export const OnBoardingScreen = ({ navigation }) => {
   }
 
   const enterAuth = async () => {
-    setShow(true)
     try {
       const updatedShowValue = true; // Store the updated value of 'show' in a separate variable
       const jsonValue = JSON.stringify(updatedShowValue);
-      Alert.alert(jsonValue);
       await AsyncStorage.setItem("@onBoarding", jsonValue);
       navigation.navigate("getIn");
     } catch (e) {
-      Alert.alert("Onboarding couldn't save");
+      console.log("Onboarding couldn't save");
     }
   };
-  
+
   const skip = () => {
     const lastSlideIndex = slides.length - 1
     const offset = lastSlideIndex * width
@@ -155,7 +152,7 @@ const ButtonContainer = styled.View`
 `
 const OnBoardImage = styled.Image`
   width: 100%;
-  height: 75%;
+  height: ${Platform.OS === "android" ? "60%" : "750%"};
   resize-mode: contain;
   align-self: center;
 `;

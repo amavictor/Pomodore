@@ -29,9 +29,9 @@ export const Login = ({ navigation }) => {
     const [loginDetails, setLoginDetails] = useState({
         email: "",
         password: "",
-        remember:false
+        remember: false
     })
-    const {user, setUser} = useContext(AuthContext)
+    const { setUser, setLoggedIn, loggedIn } = useContext(AuthContext)
 
 
 
@@ -43,9 +43,15 @@ export const Login = ({ navigation }) => {
         try {
             setIsLoading(true)
             const response = await signInWithEmailAndPassword(auth, email, password)
-            await AsyncStorage.setItem("@user", JSON.stringify(response.user))
-            setUser(response.user)
-            setIsLoading(false)
+            if (response) {
+                setUser(response.user)
+                await AsyncStorage.setItem("@user", JSON.stringify(response.user))
+                setLoggedIn(true)
+                await AsyncStorage.setItem("@loggedIn",JSON.stringify(loggedIn))
+                setIsLoading(false)
+                
+            }
+
         }
         catch (e) {
             Alert.alert(e.message)
@@ -74,7 +80,7 @@ export const Login = ({ navigation }) => {
                             KeyboardAppearance={colorScheme}
                             clearButtonMode="unless-editing"
                             value={loginDetails.email}
-                            onChangeText={(text)=>setLoginDetails({...loginDetails, email: text})}
+                            onChangeText={(text) => setLoginDetails({ ...loginDetails, email: text })}
                             IconStart={() => <Ionicons name="mail" size={20} color={colors.textColor} />}
                         />
                         <Input
@@ -83,7 +89,7 @@ export const Login = ({ navigation }) => {
                             clearButtonMode="unless-editing"
                             password={true}
                             value={loginDetails.password}
-                            onChangeText={(text)=>setLoginDetails({...loginDetails, password: text})}
+                            onChangeText={(text) => setLoginDetails({ ...loginDetails, password: text })}
                             IconStart={() => <Entypo name="lock" size={20} color={colors.textColor} />}
                         />
                     </InputsContainer>
@@ -93,7 +99,7 @@ export const Login = ({ navigation }) => {
                     <BouncyCheckbox
                         size={18}
                         fillColor={colors.primary}
-                        onPress={(isChecked)=>setLoginDetails({...loginDetails, remember:isChecked})}
+                        onPress={(isChecked) => setLoginDetails({ ...loginDetails, remember: isChecked })}
                     />
                     <RememberText>Remember me</RememberText>
                 </RememberContainer>

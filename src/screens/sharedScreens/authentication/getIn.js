@@ -1,10 +1,8 @@
 import { useContext } from "react"
 import {
-    SafeAreaView,
     View,
     Text,
     Platform,
-    Image
 } from "react-native";
 import styled from "styled-components/native"
 import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
@@ -70,19 +68,19 @@ export const GetIn = ({ navigation }) => {
 
 
 const Container = styled.View`
-    height: 100%;
-    background-color: ${({ colors }) => colors.backgroundColor};
-    align-items: center;
-    justify-content: center;
-    gap: ${mScale(40)}px;
-    width: 100%;
-    padding-horizontal:${mScale(20)}px;
-`
+  height: 100%;
+  background-color: ${({ colors }) => colors.backgroundColor};
+  align-items: center;
+  justify-content: center;
+  gap: ${mScale(40)}px;
+  width: 100%;
+  padding-horizontal: ${mScale(20)}px;
+`;
 const GetStartedText = styled.Text`
-    font-size: ${mScale(35)}px;
-    font-weight: 700;
-    color: ${({ colors }) => colors.textColor};
-`
+  font-size: ${mScale(35)}px;
+  font-weight: 700;
+  color: ${({ colors }) => colors.textColor};
+`;
 const ButtonContainer = styled.View`
     gap: ${mScale(30)}px;
     width: 100%;

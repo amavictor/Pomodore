@@ -1,8 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signOut } from "firebase/auth"
-import { useContext } from "react";
 import { Alert } from "react-native";
-import { AuthContext } from "../../authContext/authContext";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDQKfwy9xIVoZK6-iqH9LCCdx4gB1VycKk",

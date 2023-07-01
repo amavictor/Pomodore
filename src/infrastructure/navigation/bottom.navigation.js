@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { HomeNavigation } from "./home.navigation"
 import { Ionicons } from '@expo/vector-icons';
 import { TaskNavigator } from "./task.navigation";
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Platform } from 'react-native';
 import { mScale, vScale } from '../utilities/utilFunctions';
 import { useContext } from 'react';
 import { ThemeContext } from '../utilities/themeContext/themeContext';
@@ -30,7 +30,7 @@ const AddComponent = () => {
                 position: "relative",
                 zIndex: 1,
                 top: -10,
-                borderRadius: "50%",
+                borderRadius: Platform.OS === "android" ? mScale(25) :  "50%",
                 elevation: 20,
                 shadowColor: "#000",
                 shadowOffset: {

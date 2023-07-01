@@ -5,6 +5,8 @@ import {
     KeyboardAvoidingView,
     Alert,
     Keyboard,
+    ActivityIndicator,
+    Platform
 } from "react-native"
 import { useColorScheme } from "react-native"
 import { Input } from "../../../ui_elements/input"
@@ -19,20 +21,17 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import {
     createUserWithEmailAndPassword,
-    GoogleAuthProvider,
-    signInWithPopup
 } from "firebase/auth";
-import { auth, googleSignIn } from "../../../infrastructure/utilities/firebaseUtils/firebase";
+import { auth } from "../../../infrastructure/utilities/firebaseUtils/firebase";
 import { AuthContext } from "../../../infrastructure/authContext/authContext";
 import * as Haptics from 'expo-haptics';
-import { Snackbar, ActivityIndicator } from "@react-native-material/core";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 
 
 
 
 export const SignUp = () => {
-    const { user, setUser } = useContext(AuthContext)
+    const { setUser } = useContext(AuthContext)
     const { colors } = useContext(ThemeContext)
     const navigation = useNavigation()
     const [isLoading, setIsLoading] = useState(false)
@@ -50,22 +49,27 @@ export const SignUp = () => {
     const signUp = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
         Keyboard.dismiss()
+        setIsLoading(true)
         const { email, password, confirmPassword } = signupDetails
         if (password !== confirmPassword) {
             Alert.alert("Passwords do not match")
+            setIsLoading(false)
             return
         }
         else if (email === "" || password === "" || confirmPassword === "") {
             Alert.alert("Please fill in all fields")
+            setIsLoading(false)
             return
         }
         else {
             setIsLoading(true)
+            console.log("Runningnignging")
             createUserWithEmailAndPassword(auth, email, password)
                 .then((response) => {
                     const user = response.user
                     setUser(user)
                     setIsLoading(false)
+                    
                     navigation.dispatch(
                         CommonActions.reset({
                             index: 0,
@@ -85,15 +89,7 @@ export const SignUp = () => {
 
     }
 
-    const googleLogin = async () => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-        const provider = new GoogleAuthProvider();
-        try {
-            const response = await signInWithPopup(auth, provider)
-        } catch (e) {
-            Alert.alert(e.message);
-        }
-    };
+
     return (
         <BackgroundContainer colors={colors} inset={insets}>
             <SignUpText colors={colors}>Create Your Account</SignUpText>
@@ -143,7 +139,7 @@ export const SignUp = () => {
 
             <Button onPress={signUp}>{
                 isLoading ?
-                    <ActivityIndicator size="small" color="white" /> :
+                    <ActivityIndicator size="large" color="white" /> :
                     "Sign Up"
             }
             </Button>
@@ -157,7 +153,6 @@ export const SignUp = () => {
                 <SocialSignUpContainer>
                     <Button
                         outline
-                        onPress={googleLogin}
                     >
                         <ButtonContent>
                             <Social source={require("../../../../assets/icons/google.png")} />
@@ -185,23 +180,6 @@ export const SignUp = () => {
                 Already have an account?
                 <SignIn colors={colors} onPress={() => navigation.navigate("login")}>Sign In</SignIn>
             </ActiveAccount>
-            {/* {
-                signInSuccess ?
-                    <SnackBarNotify
-                        colors={colors}
-                        message="Sign Up Successful                                                 ✅"
-                    /> :
-                    null
-            }
-            {
-                signInFail ?
-                    <SnackBarNotify
-                        colors={colors}
-                        message="Sign Up Failed                                                 ❌"
-                    /> :
-                    null
-            } */}
-
         </BackgroundContainer>
     )
 }
@@ -238,7 +216,7 @@ const RememberText = styled.Text`
 `
 const Line = styled.View`
     border-bottom-color: ${({ colors }) => colors.lineColor};
-    border-bottom-width: 1 px;
+    /* border-bottom-width: 1 px; */
     width:${mScale(150)}px;
     margin-horizontal:${mScale(5)}px;
 `
@@ -277,9 +255,4 @@ const ActiveAccount = styled.Text`
 const SignIn = styled.Text`
     color: ${({ colors }) => colors.primary};
     margin-left: ${mScale(5)}px;
-`
-const SnackBarNotify = styled(Snackbar)`
-    background-color: ${({ colors }) => colors.textColor};
-    width:100%;
-    
 `

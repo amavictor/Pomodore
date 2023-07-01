@@ -40,7 +40,7 @@ export const AuthenticationNavigator = () => {
     }, []);
 
     if (loading) {
-        return null; // Render a loading indicator or any other placeholder component
+        return null; 
     }
     return (
         <Stack.Navigator

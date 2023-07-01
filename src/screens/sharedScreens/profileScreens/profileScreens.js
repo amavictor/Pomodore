@@ -36,6 +36,7 @@ import { Camera } from "expo-camera"
 import * as ImagePicker from "expo-image-picker"
 import { AuthContext } from "../../../infrastructure/authContext/authContext"
 import { signOutUser } from "../../../infrastructure/utilities/firebaseUtils/firebase"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 
 
@@ -100,6 +101,20 @@ export const ProfileScreen = ({ navigation, route }) => {
         }
     }, [cameraPermission])
 
+    const signOutCurrentUser = async () => {
+
+        try {
+            await AsyncStorage.removeItem("@user")
+            setUser(null)
+            signOutUser()
+        }
+        catch (e) {
+            Alert.alert("There was a problem signing out.")
+        }
+
+      
+    }
+
     const selectImageFromGallery = async () => {
 
         const { status } = await requestMediaPermission()
@@ -158,7 +173,7 @@ export const ProfileScreen = ({ navigation, route }) => {
 
                             <UserDetails>
                                 <Text>Full name</Text>
-                                <Text>Nickname</Text>
+                                <Text>{user?.email}</Text>
                             </UserDetails>
 
                             <NoticeContainer
@@ -273,10 +288,7 @@ export const ProfileScreen = ({ navigation, route }) => {
                                         [
                                             {
                                                 text: "Sign out",
-                                                onPress: () => {
-                                                    signOutUser()
-                                                    setUser(null)
-                                                },
+                                                onPress: signOutCurrentUser,
                                                 style: "destructive",
                                             },
                                             { text: 'Stay', onPress: () => 0 },
