@@ -152,7 +152,7 @@ const ButtonContainer = styled.View`
 `
 const OnBoardImage = styled.Image`
   width: 100%;
-  height: ${Platform.OS === "android" ? "60%" : "750%"};
+  height: ${Platform.OS === "android" ? "60%" : "75%"};
   resize-mode: contain;
   align-self: center;
 `;

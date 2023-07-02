@@ -6,8 +6,10 @@ import { ThemeContextProvider } from './src/infrastructure/utilities/themeContex
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthContextProvider, MemoizedAuthProvider } from './src/infrastructure/authContext/authContext';
 import { TaskContextProvider } from './src/infrastructure/utilities/taskContext/taskContext';
+import { useEffect } from 'react';
 
 export default function App() {
+
   return (
     <AuthContextProvider>
       <TaskContextProvider>

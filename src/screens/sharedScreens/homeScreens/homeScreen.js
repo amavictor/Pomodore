@@ -1,7 +1,7 @@
 import styled from "styled-components/native"
 import { Text, PanResponder, ScrollView, Button, Animated } from "react-native"
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Backdrop, BackdropSubheader, Badge } from "@react-native-material/core";
+import { Backdrop, Badge } from "@react-native-material/core";
 import { useState, useContext, useRef, useEffect, } from "react";
 import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
 import { mScale, setTimeOfDay, vScale } from '../../../infrastructure/utilities/utilFunctions';
@@ -11,6 +11,10 @@ import { TaskCard } from "../../../ui_elements/taskCard";
 import { TaskContext } from "../../../infrastructure/utilities/taskContext/taskContext";
 import { getQuote } from "../../../infrastructure/utilities/utilFunctions";
 import { useFocusEffect } from "@react-navigation/native";
+import { AuthContext } from "../../../infrastructure/authContext/authContext";
+
+
+
 
 
 
@@ -25,9 +29,8 @@ export const HomeScreen = ({ navigation }) => {
     const [taskPercentage, setTaskPercentage] = useState(0)
 
 
-
-
     useFocusEffect(() => calculateTaskPercentage())
+
 
     useEffect(() => {
         const currentDate = new Date();
@@ -44,6 +47,7 @@ export const HomeScreen = ({ navigation }) => {
     }, [tasks]);
 
 
+    
     const panResponder = useRef(
         PanResponder.create({
             onStartShouldSetPanResponder: () => true,
@@ -84,7 +88,6 @@ export const HomeScreen = ({ navigation }) => {
         if (completedTasks.length > 0) {
             const total = (completedTasks?.length / homeTask?.length) * 100;
             setTaskPercentage(total)
-
         }
     }
 
@@ -196,9 +199,11 @@ export const HomeScreen = ({ navigation }) => {
 const BackdropHeaderComponent = () => {
     const insets = useSafeAreaInsets()
     const timeOfDay = setTimeOfDay()
+    const { user } = useContext(AuthContext)
+
     return (
         <BackdropHeaderContainer insets={insets}>
-            <MorningText>{timeOfDay}, Victor!</MorningText>
+            <MorningText>{timeOfDay}, {user?.lastname} </MorningText>
             <NotificationContainer>
                 <Badge
                     label={0}

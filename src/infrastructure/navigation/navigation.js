@@ -23,22 +23,22 @@ export const Navigation = () => {
     } = useContext(AuthContext);
     const { colors } = useContext(ThemeContext);
   
-    useEffect(() => {
-      const getUser = async () => {
-        try {
-          const user = await AsyncStorage.getItem("@user");
-          if (user !== null) {
-            setUser(JSON.parse(user));
-            setLoggedIn(true);
-          }
-        } catch (error) {
-          // Handle the error here
-          console.log("Error retrieving user:", error);
-        }
-      };
+    // useEffect(() => {
+    //   const getUser = async () => {
+    //     try {
+    //       const user = await AsyncStorage.getItem("@user");
+    //       if (user !== null) {
+    //         setUser(JSON.parse(user));
+    //         // setLoggedIn(true);
+    //       }
+    //     } catch (error) {
+    //       // Handle the error here
+    //       console.log("Error retrieving user:", error);
+    //     }
+    //   };
   
-      getUser();
-    }, []);
+    //   getUser();
+    // }, []);
   
     return (
       <NavigationBackground colors={colors}>

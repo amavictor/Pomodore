@@ -1,6 +1,5 @@
 
 import { onAuthStateChanged } from "firebase/auth";
-import { Stack, ActivityIndicator } from "@react-native-material/core";
 import {
     useEffect,
     createContext,
@@ -8,6 +7,7 @@ import {
 } from 'react';
 import { auth } from "../utilities/firebaseUtils/firebase";
 import { React } from 'react';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export const AuthContext = createContext()
@@ -15,6 +15,26 @@ export const AuthContext = createContext()
 export const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState(null)
     const [loggedIn, setLoggedIn] = useState(false)
+
+    useEffect(() => {
+        (async function getUserFromStorage() {
+            try {
+                const currentUser = await AsyncStorage.getItem("@user")
+                if (currentUser !== null) {
+                    setUser(JSON.parse(currentUser))
+                    setLoggedIn(true)
+
+                    console.log("This is for image check",currentUser)
+                }
+            }
+            catch (e) {
+                
+            }
+        })()
+    },[])
+
+
+
     useEffect(() => {
         const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
             if (currentUser) {

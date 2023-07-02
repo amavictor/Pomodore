@@ -36,7 +36,12 @@ export const FillProfile = ({ navigation, route }) => {
     const [mediaPermission, requestMediaPermission] = ImagePicker.useMediaLibraryPermissions()
 
     const [cameraPermission, requestCameraPermission] = Camera.useCameraPermissions()
-    const {setIsLoggedIn, setUser, user} = useContext(AuthContext)
+    const { setLoggedIn, setUser, user } = useContext(AuthContext)
+
+    const [userDetails, setUserDetails] = useState({
+        firstname: "",
+        lastname: ""
+    })
 
 
 
@@ -76,14 +81,19 @@ export const FillProfile = ({ navigation, route }) => {
     }, [cameraPermission])
 
     const enterApp = async () => {
-        setUser((user) => ({ ...user, image: image }))
+        const updatedUser = {
+            ...user,
+            image: image,
+            ...userDetails
+        };
+
+        setUser({ ...user, image: image, ...userDetails });
+
         try {
-            await AsyncStorage.setItem("@user", JSON.stringify(user))
-            setIsLoggedIn(true)
-            navigation.navigate('Home')
-        }
-        catch (e) {
-            Alert.alert(e.message)
+            await AsyncStorage.mergeItem("@user", JSON.stringify(updatedUser));
+            setLoggedIn(true);
+        } catch (e) {
+            Alert.alert(e.message);
         }
     }
 
@@ -110,6 +120,7 @@ export const FillProfile = ({ navigation, route }) => {
         }
     }
 
+    
 
     return (
         <BottomSheetModalProvider>
@@ -117,7 +128,7 @@ export const FillProfile = ({ navigation, route }) => {
                 <KeyboardAvoidingView
                     style={{
                         flex: 1,
-                        alignItems:"center"
+                        alignItems: "center"
                     }}
                     behavior={"padding"}
                 >
@@ -150,19 +161,26 @@ export const FillProfile = ({ navigation, route }) => {
 
                             <InputContainer>
                                 <Input
-                                    placeholder="Full name "
+                                    placeholder="Firstname"
+                                    value={userDetails?.firstname}
+                                    onChangeText={(text) => setUserDetails({ ...userDetails, firstname: text })}
                                 />
                                 <Input
-                                    placeholder="Nickname"
+                                    placeholder="Lastname"
+                                    value={userDetails?.email}
+                                    onChangeText={(text) => setUserDetails({ ...userDetails, lastname: text })}
                                 />
                             </InputContainer>
 
                         </ProfileDetailsContainer>
                         <ButtonContainer>
-                            <Button  alternate>Skip</Button>
-                            <Button 
-                    
-
+                            <Button width={mScale(160)}
+                                alternate
+                                onPress={() => enterApp()}
+                            >Skip</Button>
+                            <Button
+                                width={mScale(160)}
+                                onPress={() => enterApp()}
                             >Start</Button>
                         </ButtonContainer>
 

@@ -53,17 +53,15 @@ export const ProfileScreen = ({ navigation, route }) => {
         setPrimary
     } = useContext(ThemeContext)
 
+
+    const { user, setUser, setLoggedIn } = useContext(AuthContext)
+
     const [showColorPallete, setShowColorPallete] = useState(false)
-    const [image, setImage] = useState(null)
+    const [image, setImage] = useState(user?.image)
     const [mediaPermission, requestMediaPermission] = ImagePicker.useMediaLibraryPermissions()
     const [cameraPermission, requestCameraPermission] = Camera.useCameraPermissions()
     const snapPoints = ["35%"]
     const bottomSheetModalRef = useRef(null)
-
-    const { user, setUser } = useContext(AuthContext)
-
-    console.log(user)
-
 
 
     useEffect(() => {
@@ -72,6 +70,10 @@ export const ProfileScreen = ({ navigation, route }) => {
             bottomSheetModalRef?.current?.close()
         }
     }, [route.params?.imageFromCamera])
+
+    useEffect(() => {
+        console.log(image, "Popoolpl")
+    }, [])
 
     const handleSelectImageSource = () => {
         bottomSheetModalRef.current?.present()
@@ -107,12 +109,13 @@ export const ProfileScreen = ({ navigation, route }) => {
             await AsyncStorage.removeItem("@user")
             setUser(null)
             signOutUser()
+            setLoggedIn(false)
         }
         catch (e) {
             Alert.alert("There was a problem signing out.")
         }
 
-      
+
     }
 
     const selectImageFromGallery = async () => {
@@ -172,7 +175,7 @@ export const ProfileScreen = ({ navigation, route }) => {
                             </AvatarContainer>
 
                             <UserDetails>
-                                <Text>Full name</Text>
+                                <Text>{user?.firstname} {user?.lastname}</Text>
                                 <Text>{user?.email}</Text>
                             </UserDetails>
 

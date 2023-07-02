@@ -5,7 +5,7 @@ import { CameraType, Camera } from "expo-camera"
 import { mScale } from '../../../../infrastructure/utilities/utilFunctions';
 
 export const CameraComponent = ({ navigation }) => {
-    const [cameraType, setCameraType] = useState(CameraType.Constants.Type.front)
+    const [cameraType, setCameraType] = useState(CameraType.front)
     const cameraRef = useRef(null)
 
     const snap = async () => {
@@ -20,6 +20,10 @@ export const CameraComponent = ({ navigation }) => {
             })
         }
     }
+    
+    const toggleType = () => {
+        setCameraType(current => (current === CameraType.front ? CameraType.back : CameraType.front));
+    }
 
     return (
         <CameraContainer>
@@ -28,13 +32,8 @@ export const CameraComponent = ({ navigation }) => {
             >
                 <CameraContent>
                     <FlipCameraContainer
-                        onPress={() =>
-                            setCameraType(
-                                cameraType === Camera.Constants.Type.front
-                                    ? Camera.Constants.Type.back
-                                    : Camera.Constants.Type.front
-                            )
-                        }                    >
+                        onPress={toggleType}
+                    >
                         <FlipCamera source={require("../../../../../assets/icons/flipCamera.png")} />
                     </FlipCameraContainer>
 
@@ -52,7 +51,7 @@ export const CameraComponent = ({ navigation }) => {
     )
 }
 
-const CameraContainer = styled.View`
+const CameraContainer = styled.TouchableOpacity`
     flex:1;
     height: 100%;
     width: 100%;

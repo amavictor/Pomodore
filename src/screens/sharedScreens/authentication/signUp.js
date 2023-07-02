@@ -10,7 +10,7 @@ import {
 } from "react-native"
 import { useColorScheme } from "react-native"
 import { Input } from "../../../ui_elements/input"
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
 import { Entypo } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
@@ -26,6 +26,7 @@ import { auth } from "../../../infrastructure/utilities/firebaseUtils/firebase";
 import { AuthContext } from "../../../infrastructure/authContext/authContext";
 import * as Haptics from 'expo-haptics';
 import { CommonActions, useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 
@@ -46,6 +47,7 @@ export const SignUp = () => {
 
 
 
+
     const signUp = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
         Keyboard.dismiss()
@@ -63,19 +65,25 @@ export const SignUp = () => {
         }
         else {
             setIsLoading(true)
-            console.log("Runningnignging")
             createUserWithEmailAndPassword(auth, email, password)
                 .then((response) => {
-                    const user = response.user
-                    setUser(user)
+                    const currentUser = response.user
+                    setUser(currentUser?.email)
                     setIsLoading(false)
-                    
-                    navigation.dispatch(
-                        CommonActions.reset({
-                            index: 0,
-                            routes: [{ name: "fillProfile" }],
+
+
+                    AsyncStorage.setItem("@user", JSON.stringify(currentUser))
+                        .then(() => {
+                            navigation.dispatch(
+                                CommonActions.reset({
+                                    index: 0,
+                                    routes: [{ name: "fillProfile" }],
+                                })
+                            )
                         })
-                    )
+                        .catch(e => { })
+
+
                 })
                 .catch(e => {
                     Alert.alert(e.message)
