@@ -1,6 +1,5 @@
 import styled from "styled-components/native"
 import {
-    View,
     Text,
     KeyboardAvoidingView,
     Alert,
@@ -10,7 +9,7 @@ import {
 } from "react-native"
 import { useColorScheme } from "react-native"
 import { Input } from "../../../ui_elements/input"
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
 import { Entypo } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';

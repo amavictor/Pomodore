@@ -15,7 +15,6 @@ import {
 import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
 import { Input } from "../../../ui_elements/input";
 import { SelectList } from "react-native-dropdown-select-list";
-import DateTimePicker from '@react-native-community/datetimepicker';
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { Button } from "../../../ui_elements/buttons";
 import Slider from "@react-native-community/slider";

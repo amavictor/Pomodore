@@ -1,6 +1,5 @@
 import {
     Text,
-    AppState,
     TouchableWithoutFeedback,
     Alert,
     Vibration
@@ -39,10 +38,8 @@ export const TimerScreen = ({ route, navigation, params }) => {
     const [maxValue, setMaxValue] = useState(item?.workingSessions * 60);
     const [longBreakComplete, setLongBreakComplete] = useState(false)
     const [shortBreakComplete, setShortBreakComplete] = useState(false)
-    // const [appState, setAppState] = useState(AppState.currentState)
     const [isRunning, setIsRunning] = useState(false)
 
-    // console.log(appState, "appstate")
 
     useEffect(() => {
         let intervalId;
@@ -148,34 +145,11 @@ export const TimerScreen = ({ route, navigation, params }) => {
         [navigation, remainingTime, isRunning]
     )
 
-
-    // const handleAppStateChange = (nextAppState) => {
-    //     if (appState.match(/inactive|background/) && nextAppState === "active") {
-    //         // App has come to the foreground
-    //         if (play) {
-    //             setIsRunning(true)
-    //         }
-    //     } else {
-    //         // App has gone to the background
-    //         if (play) {
-    //             setIsRunning(true)
-    //         }
-    //     }
-    //     setAppState(nextAppState);
-    // };
     const formatTime = (time) => {
         const minutes = Math.floor(time / 60).toString().padStart(2, '0');
         const seconds = (time % 60).toString().padStart(2, '0');
         return `${minutes}:${seconds}`;
     };
-
-    // useEffect(() => {
-    //     AppState.addEventListener("change", handleAppStateChange);
-    //     const removeListener = () => AppState.removeEventListener("change", handleAppStateChange)
-
-    //     return () => removeListener()
-    // }, [])
-
 
     const startLongBreak = () => {
         setPlay(false);

@@ -23,8 +23,6 @@ export const AuthContextProvider = ({ children }) => {
                 if (currentUser !== null) {
                     setUser(JSON.parse(currentUser))
                     setLoggedIn(true)
-
-                    console.log("This is for image check",currentUser)
                 }
             }
             catch (e) {

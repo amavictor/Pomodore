@@ -43,7 +43,6 @@ export const HomeScreen = ({ navigation }) => {
             );
         });
         setHomeTask(currentTask)
-        console.log(completedTasks, "taskss")
     }, [tasks]);
 
 

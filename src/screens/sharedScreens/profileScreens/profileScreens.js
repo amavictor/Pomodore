@@ -9,7 +9,6 @@ import {
     Text,
     TouchableWithoutFeedback,
     View,
-    Animated,
     Platform,
     UIManager,
     LayoutAnimation,
@@ -70,10 +69,6 @@ export const ProfileScreen = ({ navigation, route }) => {
             bottomSheetModalRef?.current?.close()
         }
     }, [route.params?.imageFromCamera])
-
-    useEffect(() => {
-        console.log(image, "Popoolpl")
-    }, [])
 
     const handleSelectImageSource = () => {
         bottomSheetModalRef.current?.present()

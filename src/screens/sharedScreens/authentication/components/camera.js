@@ -1,5 +1,4 @@
 import styled from "styled-components/native"
-import { View } from "react-native"
 import { useState, useRef } from "react"
 import { CameraType, Camera } from "expo-camera"
 import { mScale } from '../../../../infrastructure/utilities/utilFunctions';

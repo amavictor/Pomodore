@@ -1,9 +1,7 @@
 import styled from "styled-components/native"
 import {
     KeyboardAvoidingView,
-    Image,
     Alert,
-    ScrollView,
     TouchableWithoutFeedback,
     Keyboard
 } from "react-native"

@@ -23,7 +23,6 @@ export const EditProfile = () => {
 
     const updateProfile = async () => {
         const { firstname, lastname } = editInfo
-        console.log("hohoho")
         const newData = {
             firstname: firstname,
             lastname: lastname

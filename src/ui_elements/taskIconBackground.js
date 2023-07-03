@@ -1,6 +1,5 @@
 import styled from "styled-components/native"
 import { mScale } from '../infrastructure/utilities/utilFunctions';
-import { color } from 'react-native-reanimated';
 import { useEffect,useContext, useState } from "react";
 import { ThemeContext } from "../infrastructure/utilities/themeContext/themeContext";
 export const TaskIconBackground = ({ children }) => {

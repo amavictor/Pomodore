@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import { View, Text } from "react-native"
+import { Text } from "react-native"
 import styled from "styled-components/native"
 import { ThemeContext } from "../../../infrastructure/utilities/themeContext/themeContext"
 import { vScale, mScale } from "../../../infrastructure/utilities/utilFunctions"

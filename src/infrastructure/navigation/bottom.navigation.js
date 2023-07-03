@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { HomeNavigation } from "./home.navigation"
 import { Ionicons } from '@expo/vector-icons';
 import { TaskNavigator } from "./task.navigation";
-import { View, Text, StyleSheet, Platform } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { mScale, vScale } from '../utilities/utilFunctions';
 import { useContext } from 'react';
 import { ThemeContext } from '../utilities/themeContext/themeContext';

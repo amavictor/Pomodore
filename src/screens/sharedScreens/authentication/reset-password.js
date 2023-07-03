@@ -1,11 +1,8 @@
 import styled from "styled-components/native"
 import {
     View,
-    Text,
     KeyboardAvoidingView,
     Modal,
-    TouchableOpacity,
-    Image
 } from "react-native"
 import { useColorScheme } from "react-native"
 import { Input } from "../../../ui_elements/input"
@@ -17,12 +14,11 @@ import {
 } from 'react';
 import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
 import { Entypo } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
 import { mScale, vScale } from '../../../infrastructure/utilities/utilFunctions';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Button } from "../../../ui_elements/buttons";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Animated, { color } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 
 
 

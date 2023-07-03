@@ -1,5 +1,5 @@
 
-import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import { AddTaskScreen } from '../../screens/sharedScreens/addTask/addTask';
 import { mScale } from '../utilities/utilFunctions';
 import { useContext } from 'react';

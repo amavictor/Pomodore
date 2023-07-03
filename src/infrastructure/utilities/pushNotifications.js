@@ -2,7 +2,6 @@ import * as Device from 'expo-device'
 import * as Notifications from 'expo-notifications'
 import { useEffect, useRef, useState } from 'react'
 import { Platform, Alert } from 'react-native'
-import * as TaskManager from "expo-task-manager"
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({

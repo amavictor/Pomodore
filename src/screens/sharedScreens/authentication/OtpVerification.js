@@ -1,5 +1,5 @@
 import styled from "styled-components/native"
-import { useContext, useRef, useState, useEffect } from 'react';
+import { useContext,useState } from 'react';
 import { ThemeContext } from '../../../infrastructure/utilities/themeContext/themeContext';
 import { ScrollView } from "react-native";
 import { mScale } from '../../../infrastructure/utilities/utilFunctions';

@@ -4,8 +4,6 @@ import { PlayIcon } from "./taskIcons/taskIcons";
 import { useContext, useLayoutEffect, useRef } from 'react';
 import { ThemeContext } from '../infrastructure/utilities/themeContext/themeContext';
 import { View, Animated, PanResponder, Image, UIManager, LayoutAnimation, Text } from "react-native";
-import { useEffect } from 'react';
-import * as Haptics from 'expo-haptics';
 import { useNavigation } from '@react-navigation/native';
 
 

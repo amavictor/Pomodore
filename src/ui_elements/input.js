@@ -1,7 +1,7 @@
 import styled from "styled-components/native";
 import { useContext } from 'react';
 import { ThemeContext } from '../infrastructure/utilities/themeContext/themeContext';
-import { mScale, vScale } from '../infrastructure/utilities/utilFunctions';
+import { mScale } from '../infrastructure/utilities/utilFunctions';
 import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 
