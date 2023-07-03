@@ -31,9 +31,8 @@ export const Login = ({ navigation }) => {
         password: "",
         remember: false
     })
+
     const { setUser, setLoggedIn, loggedIn } = useContext(AuthContext)
-
-
 
     const login = async (details) => {
         Keyboard.dismiss()
@@ -60,12 +59,7 @@ export const Login = ({ navigation }) => {
         finally {
             setIsLoading(false)
         }
-
-        // navigation.navigate("fillProfile")
-        // () => navigation.navigate("fillProfile")
     }
-
-
 
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>

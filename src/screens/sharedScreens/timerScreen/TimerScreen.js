@@ -39,10 +39,10 @@ export const TimerScreen = ({ route, navigation, params }) => {
     const [maxValue, setMaxValue] = useState(item?.workingSessions * 60);
     const [longBreakComplete, setLongBreakComplete] = useState(false)
     const [shortBreakComplete, setShortBreakComplete] = useState(false)
-    const [appState, setAppState] = useState(AppState.currentState)
+    // const [appState, setAppState] = useState(AppState.currentState)
     const [isRunning, setIsRunning] = useState(false)
 
-    console.log(appState, "appstate")
+    // console.log(appState, "appstate")
 
     useEffect(() => {
         let intervalId;
@@ -61,7 +61,7 @@ export const TimerScreen = ({ route, navigation, params }) => {
     useEffect(() => {
         if (remainingTime === 0) {
             setPlay(false);
-            return onComplete()
+            onComplete()
         }
     }, [remainingTime]);
 
@@ -142,40 +142,39 @@ export const TimerScreen = ({ route, navigation, params }) => {
                 );
             }
             else {
-                return
+                return Vibration.cancel()
             }
         }),
         [navigation, remainingTime, isRunning]
     )
 
 
-    const handleAppStateChange = (nextAppState) => {
-        if (appState.match(/inactive|background/) && nextAppState === "active") {
-            // App has come to the foreground
-            if (play) {
-                setIsRunning(true)
-            }
-        } else {
-            // App has gone to the background
-            if (play) {
-                setIsRunning(true)
-            }
-        }
-        setAppState(nextAppState);
-    };
+    // const handleAppStateChange = (nextAppState) => {
+    //     if (appState.match(/inactive|background/) && nextAppState === "active") {
+    //         // App has come to the foreground
+    //         if (play) {
+    //             setIsRunning(true)
+    //         }
+    //     } else {
+    //         // App has gone to the background
+    //         if (play) {
+    //             setIsRunning(true)
+    //         }
+    //     }
+    //     setAppState(nextAppState);
+    // };
     const formatTime = (time) => {
         const minutes = Math.floor(time / 60).toString().padStart(2, '0');
         const seconds = (time % 60).toString().padStart(2, '0');
         return `${minutes}:${seconds}`;
     };
 
-    useEffect(() => {
-        AppState.addEventListener("change", handleAppStateChange);
+    // useEffect(() => {
+    //     AppState.addEventListener("change", handleAppStateChange);
+    //     const removeListener = () => AppState.removeEventListener("change", handleAppStateChange)
 
-        return () => {
-            AppState.removeEventListener("change", handleAppStateChange);
-        };
-    }, [])
+    //     return () => removeListener()
+    // }, [])
 
 
     const startLongBreak = () => {
@@ -213,16 +212,32 @@ export const TimerScreen = ({ route, navigation, params }) => {
     }
 
     const onComplete = async () => {
-        const updatedItem = { ...item, completed: true };
-        setCompletedTasks(prevCompletedTasks => [...prevCompletedTasks, updatedItem])
-        await scheduleNotification(`${item.title} timer completed`)
-        Haptics.NotificationFeedbackType.Success
-
-        Vibration.vibrate(VIBRATION_PATTERN, true)
-        setTimeout(() => {
-            navigation.navigate("Home")
-        }, 6000)
-    }
+        try {
+            const updatedItem = { ...item, completed: true };
+            setCompletedTasks(prevCompletedTasks => [...prevCompletedTasks, updatedItem]);
+            await scheduleNotification(`${item.title} timer completed`);
+            Haptics.NotificationFeedbackType.Success;
+    
+            Vibration.vibrate(VIBRATION_PATTERN, true);
+    
+            setTimeout(() => {
+                Alert.alert(
+                    "Congratulations",
+                    "You completed the task",
+                    [
+                        {
+                            text: "OK",
+                            onPress: () => {
+                                navigation.navigate("Home-Screen");
+                            }
+                        }
+                    ]
+                );
+            }, 6000);
+        } catch (e) {
+            console.log(e.message);
+        }
+    };
 
 
 
